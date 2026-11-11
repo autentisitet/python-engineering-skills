@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-[![CI](https://github.com/autentisitet/python-engineering-skills/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/autentisitet/python-engineering-skills/actions/workflows/ci.yml)
+[![CI](https://github.com/autentisitet/python-engineering-skills/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/autentisitet/python-engineering-skills/actions/workflows/ci.yml)
 [![Codex Skills](https://img.shields.io/badge/Codex-Skills-000000?logo=openai&logoColor=white)](https://developers.openai.com/codex/skills/)
 [![Anthropic Agent Skills](https://img.shields.io/badge/Anthropic-Agent_Skills-D97757?logo=anthropic&logoColor=white)](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
 [![Skill Evals](https://img.shields.io/badge/Anthropic-Skill_Evals-D97757?logo=anthropic&logoColor=white)](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices#evaluation-and-iteration)
