@@ -3,11 +3,13 @@ TARGET ?=
 DATASET ?= evals/train_queries.json
 RUNS ?= 1
 
-.PHONY: help validate use remove eval smoke
+.DEFAULT_GOAL := usage
 
-help:
+.PHONY: usage validate use remove eval smoke
+
+usage:
 	@printf '%s\n' \
-	  'Project-scoped Python skills:' \
+	  'Project commands:' \
 	  '  make validate' \
 	  '  make use TARGET=/path/to/project' \
 	  '  make remove TARGET=/path/to/project' \
