@@ -1,0 +1,578 @@
+[
+  {
+    "id": "python-callable-caching-positive-04",
+    "skill": "python-callable-caching",
+    "query": "Use a property for a cheap derived area without claiming it reduces all instance memory.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-domain-modeling-positive-01",
+    "skill": "python-domain-modeling",
+    "query": "Replace avoidable typing.Any values with concrete types, Protocol, TypedDict, or boundary validation.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-negative-05",
+    "skill": "python-matplotlib-config",
+    "query": "Translate a README paragraph that mentions matplotlib.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-negative-05",
+    "skill": "python-callable-caching",
+    "query": "Configure Redis as a distributed cache outside Python callable wrappers.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-positive-05",
+    "skill": "python-domain-modeling",
+    "query": "Configure Pydantic v2 ConfigDict, Field, field_validator, and model_validator for this API boundary.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-positive-05",
+    "skill": "python-callable-caching",
+    "query": "Choose a lambda sorting key or named function based on traceback and reuse needs.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-positive-06",
+    "skill": "python-cli-file-workflows",
+    "query": "这个 Python 文件处理脚本不能把所有结果放进 list，还要用 tqdm.write 避免弄乱进度条。",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-positive-03",
+    "skill": "python-callable-caching",
+    "query": "This staticmethod has no class relationship. Decide whether it belongs at module scope.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-negative-02",
+    "skill": "python-binary-buffers",
+    "query": "Translate documentation containing the word memoryview.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-positive-03",
+    "skill": "python-matplotlib-config",
+    "query": "Create a reusable .mplstyle file and keep platform-specific CJK font fallback working.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-negative-02",
+    "skill": "python-sklearn-workflow",
+    "query": "Explain what RandomForestClassifier max_depth means in one sentence.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-02",
+    "skill": "python-domain-modeling",
+    "query": "Update the Pydantic dependency pin only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-negative-01",
+    "skill": "python-callable-caching",
+    "query": "Use functools.partial in an iterator pipeline.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-05",
+    "skill": "python-domain-modeling",
+    "query": "Count Any annotations and return the number only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-negative-05",
+    "skill": "python-media-processing",
+    "query": "Generate a camera illustration with an image model; no Python media pipeline is involved.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-negative-04",
+    "skill": "python-cli-file-workflows",
+    "query": "Update tqdm and argparse mentions in the README only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-negative-02",
+    "skill": "python-cli-file-workflows",
+    "query": "Explain Path(__file__).resolve().parent in one sentence.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-loguru-logging-positive-05",
+    "skill": "python-loguru-logging",
+    "query": "Decide between logger.bind and logger.contextualize for async request context.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-positive-02",
+    "skill": "python-cli-file-workflows",
+    "query": "Resolve a bundled default config relative to the script while keeping user input paths relative to cwd.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-negative-01",
+    "skill": "python-media-processing",
+    "query": "Update the opencv-python version in requirements only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-negative-02",
+    "skill": "python-media-processing",
+    "query": "Apply torchvision image augmentations to tensors that are already decoded.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-loguru-logging-positive-06",
+    "skill": "python-loguru-logging",
+    "query": "检查 Loguru 的 rotation、retention、compression 配置，并避免记录敏感字段。",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-04",
+    "skill": "python-loguru-logging",
+    "query": "Print one debugging value to stdout in a throwaway script.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-negative-04",
+    "skill": "python-sklearn-workflow",
+    "query": "Call model.predict on this already fitted sklearn pipeline and save the result.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-positive-06",
+    "skill": "python-binary-buffers",
+    "query": "二进制数据头跨 chunk，Python 解析器该如何保存未完成数据？",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-06",
+    "skill": "python-loguru-logging",
+    "query": "Design OpenTelemetry trace sampling rather than application logs.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-negative-06",
+    "skill": "python-matplotlib-config",
+    "query": "Update the matplotlib dependency pin only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-positive-01",
+    "skill": "python-callable-caching",
+    "query": "Choose instance method, classmethod, staticmethod, or module function for this behavior.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-negative-06",
+    "skill": "python-cli-file-workflows",
+    "query": "Use Rich progress instead of tqdm in this already-designed CLI.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-04",
+    "skill": "python-domain-modeling",
+    "query": "Design SQL CHECK constraints without Python models.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-positive-02",
+    "skill": "python-matplotlib-config",
+    "query": "Should this app use plt.style.use or sns.set_theme globally? Prevent one from overwriting the other.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-negative-05",
+    "skill": "python-binary-buffers",
+    "query": "Fix a CSS byte-size label in the UI.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-negative-06",
+    "skill": "python-binary-buffers",
+    "query": "Update the filename bytes-guide.md in README only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-03",
+    "skill": "python-domain-modeling",
+    "query": "Translate documentation mentioning BaseSettings.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-negative-02",
+    "skill": "python-matplotlib-config",
+    "query": "Analyze this CSV and calculate summary statistics; do not configure plotting.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-positive-03",
+    "skill": "python-media-processing",
+    "query": "Use Decord for fast offline training samples and choose whether the global bridge should return Torch tensors.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-positive-03",
+    "skill": "python-binary-buffers",
+    "query": "Review bytearray resizing while an exported memoryview exists.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-negative-01",
+    "skill": "python-sklearn-workflow",
+    "query": "Update scikit-learn to the latest pinned version in requirements only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-negative-04",
+    "skill": "python-binary-buffers",
+    "query": "Create a binary search tree algorithm over Python integers.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-negative-06",
+    "skill": "python-media-processing",
+    "query": "Explain what RGB stands for in one sentence without selecting a CV algorithm.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-positive-05",
+    "skill": "python-cli-file-workflows",
+    "query": "Design argparse options so --input-file maps to args.input_file with clear types, choices, defaults, and help.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-03",
+    "skill": "python-loguru-logging",
+    "query": "Translate documentation containing the phrase logger.catch.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-negative-06",
+    "skill": "python-callable-caching",
+    "query": "Count staticmethod decorators and return the number.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-positive-02",
+    "skill": "python-callable-caching",
+    "query": "Build a subclass-aware alternative constructor with classmethod and cls(...).",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-negative-04",
+    "skill": "python-matplotlib-config",
+    "query": "Decode OpenCV frames and convert BGR to RGB for a model.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-positive-01",
+    "skill": "python-cli-file-workflows",
+    "query": "Rewrite this Python CLI so a 40 GB text file is processed line by line instead of read_text().",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-negative-04",
+    "skill": "python-callable-caching",
+    "query": "Update cached_property in documentation only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-positive-02",
+    "skill": "python-media-processing",
+    "query": "Decide whether Pillow should accept truncated images and whether MAX_IMAGE_PIXELS may be disabled for this trusted batch.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-positive-04",
+    "skill": "python-cli-file-workflows",
+    "query": "This callback reports completed bytes without an iterable. Use a context-managed tqdm bar correctly.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-positive-02",
+    "skill": "python-sklearn-workflow",
+    "query": "Repeated measurements from each patient must not cross CV folds. Design the sklearn evaluation.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-positive-04",
+    "skill": "python-loguru-logging",
+    "query": "Our enqueue=True Loguru messages disappear at process exit. Add the correct completion path.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-positive-03",
+    "skill": "python-cli-file-workflows",
+    "query": "Add a tqdm file progress bar with useful desc, unit, leave behavior, and clean diagnostic messages.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-positive-01",
+    "skill": "python-media-processing",
+    "query": "Configure cv2.setNumThreads, optimized code, OpenCL, and RNG seed once at application startup.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-positive-04",
+    "skill": "python-matplotlib-config",
+    "query": "Refactor this plotting helper from plt.title and plt.plot to caller-owned Axes methods.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-positive-05",
+    "skill": "python-media-processing",
+    "query": "Use PyAV to remux two streams while preserving exact time bases and selecting the output codec.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-negative-02",
+    "skill": "python-callable-caching",
+    "query": "Clear a browser HTTP cache.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-positive-06",
+    "skill": "python-domain-modeling",
+    "query": "比较标准 dataclass、Pydantic BaseModel、BaseSettings 和 pydantic.dataclasses.dataclass。",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-negative-01",
+    "skill": "python-binary-buffers",
+    "query": "Explain UTF-8 text encoding in one paragraph.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-positive-01",
+    "skill": "python-matplotlib-config",
+    "query": "Configure Matplotlib Chinese font fallback on Fedora after applying our project style.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-negative-06",
+    "skill": "python-sklearn-workflow",
+    "query": "Plot a confusion matrix from already computed predictions without changing evaluation design.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-negative-04",
+    "skill": "python-media-processing",
+    "query": "Translate a README paragraph mentioning Decord and PyAV.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-positive-01",
+    "skill": "python-binary-buffers",
+    "query": "Design a Python memoryview API with explicit ownership and release behavior.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-negative-01",
+    "skill": "python-matplotlib-config",
+    "query": "Choose the most honest chart type for comparing these sales categories.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-positive-04",
+    "skill": "python-domain-modeling",
+    "query": "Choose BaseModel for external business data versus BaseSettings for environment and dotenv configuration.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-positive-03",
+    "skill": "python-loguru-logging",
+    "query": "Configure Loguru file rotation, retention, compression, and disk-budget tests.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-positive-04",
+    "skill": "python-sklearn-workflow",
+    "query": "Build a ColumnTransformer and Pipeline so numeric and categorical preprocessing stay inside cross-validation.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-negative-01",
+    "skill": "python-cli-file-workflows",
+    "query": "Read this ten-line fixture with Path.read_text and compare the exact contents.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-01",
+    "skill": "python-domain-modeling",
+    "query": "Explain list[int] type syntax in one sentence.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-negative-03",
+    "skill": "python-sklearn-workflow",
+    "query": "Build a PyTorch DataLoader and neural-network training loop.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-positive-02",
+    "skill": "python-domain-modeling",
+    "query": "Choose ABC for owned implementations or Protocol for third-party structural compatibility.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-positive-02",
+    "skill": "python-binary-buffers",
+    "query": "Parse a chunked binary packet when headers span socket reads in Python.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-positive-05",
+    "skill": "python-sklearn-workflow",
+    "query": "Should StandardScaler run before PCA for features measured in dollars, counts, and percentages?",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-05",
+    "skill": "python-loguru-logging",
+    "query": "Update the Loguru dependency version only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-06",
+    "skill": "python-domain-modeling",
+    "query": "Copy a file tree to another directory with shutil.copytree.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-negative-05",
+    "skill": "python-sklearn-workflow",
+    "query": "Translate documentation mentioning GridSearchCV.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-negative-05",
+    "skill": "python-cli-file-workflows",
+    "query": "Create a web upload endpoint for large files.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-positive-01",
+    "skill": "python-sklearn-workflow",
+    "query": "Choose KFold, StratifiedKFold, GroupKFold, or TimeSeriesSplit for this scikit-learn dataset.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-negative-03",
+    "skill": "python-media-processing",
+    "query": "Configure a Matplotlib color palette for a chart.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-loguru-logging-negative-01",
+    "skill": "python-loguru-logging",
+    "query": "Configure Python standard-library logging with dictConfig; Loguru is not installed.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-loguru-logging-positive-02",
+    "skill": "python-loguru-logging",
+    "query": "Use logger.bind to attach job_id once instead of repeating it in every Loguru message.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-02",
+    "skill": "python-loguru-logging",
+    "query": "Add a Sentry breadcrumb to this frontend application.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-positive-04",
+    "skill": "python-binary-buffers",
+    "query": "Choose bytes versus bytearray for shared immutable binary messages.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-positive-01",
+    "skill": "python-loguru-logging",
+    "query": "Review whether this Loguru command entrypoint should use @logger.catch with reraise=True.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-positive-06",
+    "skill": "python-matplotlib-config",
+    "query": "批量绘图服务需要统一 Matplotlib 样式、中文字体回退，并在结束时关闭 Figure。",
+    "should_trigger": true
+  },
+  {
+    "id": "python-domain-modeling-positive-03",
+    "skill": "python-domain-modeling",
+    "query": "Select Literal for two local options or Enum because the choices are reused and need behavior.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-positive-04",
+    "skill": "python-media-processing",
+    "query": "Choose OpenCV for a real-time camera pipeline and define capture failure and release behavior.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-negative-03",
+    "skill": "python-binary-buffers",
+    "query": "Change an nginx proxy timeout without touching binary data.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-positive-06",
+    "skill": "python-sklearn-workflow",
+    "query": "这个 sklearn 项目的训练集、验证集、测试集比例是否合理，并避免调参污染最终测试集？",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-negative-03",
+    "skill": "python-cli-file-workflows",
+    "query": "Build a Typer CLI and keep its existing progress library; do not use argparse or tqdm.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-positive-05",
+    "skill": "python-matplotlib-config",
+    "query": "Our sns.set_theme call resets the Chinese fonts configured earlier. Fix the startup ordering.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-positive-06",
+    "skill": "python-media-processing",
+    "query": "给图片添加中文水印并保存，比较 Pillow 字体渲染和 OpenCV 内置 putText 的边界。",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-negative-03",
+    "skill": "python-matplotlib-config",
+    "query": "Build a Plotly JavaScript dashboard with a dark theme.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-positive-03",
+    "skill": "python-sklearn-workflow",
+    "query": "Decide whether GridSearchCV or RandomizedSearchCV fits this large hyperparameter space and compute budget.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-positive-06",
+    "skill": "python-callable-caching",
+    "query": "设计一个闭包捕获配置，并检查捕获对象的生命周期是否应该改成可调用对象。",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-positive-05",
+    "skill": "python-binary-buffers",
+    "query": "A zero-copy Python parser retains a huge backing buffer. Fix ownership.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-negative-03",
+    "skill": "python-callable-caching",
+    "query": "Explain decorator syntax without reviewing method or cache design.",
+    "should_trigger": false
+  }
+]

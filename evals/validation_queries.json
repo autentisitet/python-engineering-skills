@@ -1,0 +1,386 @@
+[
+  {
+    "id": "python-loguru-logging-positive-08",
+    "skill": "python-loguru-logging",
+    "query": "Use logger.complete correctly for queued messages and an async coroutine sink.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-negative-09",
+    "skill": "python-binary-buffers",
+    "query": "Calculate SHA256 of a file with an existing CLI tool.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-negative-08",
+    "skill": "python-media-processing",
+    "query": "Count how many files import cv2 and return the number only.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-negative-09",
+    "skill": "python-callable-caching",
+    "query": "Add a property name to a JSON schema without Python descriptors.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-negative-09",
+    "skill": "python-sklearn-workflow",
+    "query": "Configure MLflow experiment tracking; model splitting and tuning are already fixed.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-positive-07",
+    "skill": "python-matplotlib-config",
+    "query": "Review rcParams so Chinese labels and negative signs render correctly in headless CI.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-08",
+    "skill": "python-loguru-logging",
+    "query": "Explain what a logger variable usually means in Python without changing code.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-negative-07",
+    "skill": "python-matplotlib-config",
+    "query": "Generate an illustration rather than a data chart.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-positive-10",
+    "skill": "python-cli-file-workflows",
+    "query": "Stream JSONL records in batches and test memory bounds, path independence, CLI errors, and interruption.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-positive-10",
+    "skill": "python-sklearn-workflow",
+    "query": "Use cross_validate for multiple metrics, train scores, and fit times while preserving group splits.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-positive-09",
+    "skill": "python-cli-file-workflows",
+    "query": "Add argparse --version correctly and decide whether custom usage, epilog, or formatter is justified.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-negative-09",
+    "skill": "python-matplotlib-config",
+    "query": "Fix a CSS font fallback list for a web page.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-negative-08",
+    "skill": "python-callable-caching",
+    "query": "Implement a Java static method.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-positive-07",
+    "skill": "python-binary-buffers",
+    "query": "pls review endian and bounds checks in this Python binary protocol decoder.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-negative-10",
+    "skill": "python-media-processing",
+    "query": "Choose a CSS filter for a browser video element.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-positive-09",
+    "skill": "python-domain-modeling",
+    "query": "Review dataclasses.asdict recursion, deepcopy cost, and JSON serialization limits.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-positive-08",
+    "skill": "python-media-processing",
+    "query": "Sample variable-frame-rate videos at a fixed real-time FPS using timestamps rather than nominal frame indices.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-positive-08",
+    "skill": "python-sklearn-workflow",
+    "query": "Use validation_curve to inspect whether one regularization parameter causes underfitting or overfitting.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-positive-08",
+    "skill": "python-cli-file-workflows",
+    "query": "Use importlib.resources instead of assuming package data is next to __file__ on disk.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-domain-modeling-negative-09",
+    "skill": "python-domain-modeling",
+    "query": "Use a plain dictionary in a tiny throwaway script.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-negative-07",
+    "skill": "python-sklearn-workflow",
+    "query": "Implement PCA from scratch for a linear algebra lesson, not a sklearn workflow.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-negative-10",
+    "skill": "python-matplotlib-config",
+    "query": "Design a Seaborn statistical aggregation and confidence interval, not global style or fonts.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-positive-08",
+    "skill": "python-matplotlib-config",
+    "query": "Design a scoped Matplotlib style context for a library that must not mutate global settings.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-positive-09",
+    "skill": "python-loguru-logging",
+    "query": "Check whether @logger.catch is hiding exceptions from tests and supervisors.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-positive-10",
+    "skill": "python-binary-buffers",
+    "query": "Ensure a truncated Python binary payload fails before out-of-bounds parsing.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-positive-10",
+    "skill": "python-matplotlib-config",
+    "query": "Make this Matplotlib function accept an Axes and save through its owning Figure.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-positive-07",
+    "skill": "python-media-processing",
+    "query": "Select uniform, segment-random, or random contiguous clip sampling for this video training task.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-positive-08",
+    "skill": "python-binary-buffers",
+    "query": "Design a Python binary buffer pipeline with bounded memory and partial reads.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-negative-10",
+    "skill": "python-callable-caching",
+    "query": "Validate this API payload with Pydantic; callable and resource ownership are unchanged.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-negative-07",
+    "skill": "python-cli-file-workflows",
+    "query": "Count lines in a file with wc from a shell script.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-negative-09",
+    "skill": "python-media-processing",
+    "query": "Configure Loguru to suppress an application warning unrelated to decoder logging.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-08",
+    "skill": "python-domain-modeling",
+    "query": "Explain one Enum member value without choosing a modeling approach.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-positive-10",
+    "skill": "python-domain-modeling",
+    "query": "Check whether a pickle round-trip preserves aliases and why it is not generic deepcopy.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-domain-modeling-positive-08",
+    "skill": "python-domain-modeling",
+    "query": "Preserve two fields pointing to the same copied child when deep-copying this domain object graph.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-09",
+    "skill": "python-loguru-logging",
+    "query": "Configure structlog processors; do not introduce Loguru.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-10",
+    "skill": "python-domain-modeling",
+    "query": "Design TypeScript interfaces for a frontend.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-loguru-logging-negative-07",
+    "skill": "python-loguru-logging",
+    "query": "Fix an nginx access_log rotation policy managed by logrotate.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-positive-10",
+    "skill": "python-callable-caching",
+    "query": "Replace __del__ resource cleanup with a context manager and idempotent close method.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-negative-08",
+    "skill": "python-binary-buffers",
+    "query": "只把日志里的 bytearray 字样替换成中文。",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-negative-10",
+    "skill": "python-binary-buffers",
+    "query": "Explain the decimal value of binary 1010; no code needed.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-negative-07",
+    "skill": "python-callable-caching",
+    "query": "Choose list, deque, or generator for this iteration.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-media-processing-positive-09",
+    "skill": "python-media-processing",
+    "query": "Choose HSV, Lab, or YCrCb for illumination-robust color segmentation and document conversion ranges.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-negative-09",
+    "skill": "python-cli-file-workflows",
+    "query": "Explain argparse choices syntax without reviewing a file-processing command.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-positive-07",
+    "skill": "python-sklearn-workflow",
+    "query": "Add learning_curve to determine whether more training data could close the train-validation gap.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-matplotlib-config-negative-08",
+    "skill": "python-matplotlib-config",
+    "query": "Explain what plt.plot does in one sentence; do not change configuration.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-binary-buffers-negative-07",
+    "skill": "python-binary-buffers",
+    "query": "Review a Rust borrow checker error for a byte buffer.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-loguru-logging-positive-07",
+    "skill": "python-loguru-logging",
+    "query": "Review a multiprocessing Loguru sink so child processes do not configure the same file independently.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-positive-10",
+    "skill": "python-media-processing",
+    "query": "Review PyAV logging and per-container RTSP options without treating both as environment variables.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-negative-08",
+    "skill": "python-sklearn-workflow",
+    "query": "Count sklearn imports in the repository and return the number.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-matplotlib-config-positive-09",
+    "skill": "python-matplotlib-config",
+    "query": "Verify installed CJK fonts before selecting the Matplotlib fallback list.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-callable-caching-positive-07",
+    "skill": "python-callable-caching",
+    "query": "Review cached_property invalidation, writable __dict__, slots compatibility, and concurrent first access.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-negative-10",
+    "skill": "python-cli-file-workflows",
+    "query": "Refactor a Python library function that receives open file objects and has no CLI or progress output.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-positive-07",
+    "skill": "python-domain-modeling",
+    "query": "Decide whether this nested Python object needs assignment sharing, copy.copy, or copy.deepcopy.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-negative-10",
+    "skill": "python-loguru-logging",
+    "query": "Count occurrences of logger.bind in the repository and return the number.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-positive-09",
+    "skill": "python-callable-caching",
+    "query": "Use __init_subclass__ for cooperative plugin registration and define duplicate/import-order behavior.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-media-processing-negative-07",
+    "skill": "python-media-processing",
+    "query": "Fix an ffmpeg command-line invocation outside Python.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-sklearn-workflow-positive-09",
+    "skill": "python-sklearn-workflow",
+    "query": "Review permutation_importance on held-out data and account for correlated features.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-binary-buffers-positive-09",
+    "skill": "python-binary-buffers",
+    "query": "Review aliasing when mutating bytearray slices through memoryview.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-sklearn-workflow-negative-10",
+    "skill": "python-sklearn-workflow",
+    "query": "Explain the mathematical definition of cross-validation without reviewing code or choosing a strategy.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-domain-modeling-negative-07",
+    "skill": "python-domain-modeling",
+    "query": "Configure environment variables in a deployment manifest; no Python settings model is requested.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-callable-caching-positive-08",
+    "skill": "python-callable-caching",
+    "query": "Choose lru_cache maxsize or cache for a nearly pure function with a bounded or unbounded key space.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-cli-file-workflows-negative-08",
+    "skill": "python-cli-file-workflows",
+    "query": "Parse one short constant JSON string already held in memory.",
+    "should_trigger": false
+  },
+  {
+    "id": "python-cli-file-workflows-positive-07",
+    "skill": "python-cli-file-workflows",
+    "query": "Review nested tqdm bars for files and records, including position and leave settings.",
+    "should_trigger": true
+  },
+  {
+    "id": "python-loguru-logging-positive-10",
+    "skill": "python-loguru-logging",
+    "query": "Design Loguru handler ownership so the sink can be removed during graceful shutdown.",
+    "should_trigger": true
+  }
+]
