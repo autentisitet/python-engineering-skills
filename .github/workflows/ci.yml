@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python3 -m pip install -r requirements.txt
+      - name: Validate skills
+        run: python3 -m scripts.packages.lint_skill_packages --strict-warnings
+      - name: Validate routing eval datasets
+        run: python3 -m scripts.evals.validate_evals
+      - name: Run repository tests
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - name: Check shell syntax
+        run: bash -n scripts/links/install.sh scripts/links/uninstall.sh
+  windows-project-links:
+    runs-on: windows-2025
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Validate skills and tests
+        shell: pwsh
+        run: |
+          python -m scripts.packages.lint_skill_packages --strict-warnings
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m scripts.evals.validate_evals
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m unittest discover -s tests -p "test_*.py"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Test project-scoped junctions
+        shell: pwsh
+        run: |
+          $Target = Join-Path $env:RUNNER_TEMP "example-python-project"
+          New-Item -ItemType Directory -Force -Path $Target | Out-Null
+          .\scripts\links\use-skills.ps1 -Target $Target -Skills python-domain-modeling
+          $Link = Join-Path $Target ".agents\skills\python-domain-modeling"
+          if (-not (Test-Path (Join-Path $Link "SKILL.md"))) { throw "Skill junction was not created" }
+          .\scripts\links\remove-skills.ps1 -Target $Target -Skills python-domain-modeling
+          if (Test-Path $Link) { throw "Skill junction was not removed" }
+
