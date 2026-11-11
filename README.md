@@ -37,7 +37,7 @@ target project's `.agents/skills/` directory.
 ### Linux and WSL
 
 ```bash
-make use TARGET=/path/to/python-project
+make install TARGET=/path/to/python-project
 ```
 
 The shell scripts require Bash 4+ and GNU `find`/`readlink`.

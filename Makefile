@@ -5,13 +5,13 @@ RUNS ?= 1
 
 .DEFAULT_GOAL := usage
 
-.PHONY: usage validate use remove eval smoke
+.PHONY: usage validate install remove eval smoke
 
 usage:
 	@printf '%s\n' \
 	  'Project commands:' \
 	  '  make validate' \
-	  '  make use TARGET=/path/to/project' \
+	  '  make install TARGET=/path/to/project' \
 	  '  make remove TARGET=/path/to/project' \
 	  '  make eval' \
 	  '  make smoke [DATASET=evals/train_queries.json RUNS=1]'
@@ -22,8 +22,8 @@ validate:
 	@$(PYTHON) -m unittest discover -s tests -p 'test_*.py'
 	@bash -n scripts/links/install.sh scripts/links/uninstall.sh
 
-use:
-	@test -n "$(TARGET)" || { echo 'Usage: make use TARGET=/path/to/project' >&2; exit 2; }
+install:
+	@test -n "$(TARGET)" || { echo 'Usage: make install TARGET=/path/to/project' >&2; exit 2; }
 	@./scripts/links/install.sh "$(TARGET)"
 
 remove:

@@ -34,7 +34,7 @@
 ### Linux 与 WSL
 
 ```bash
-make use TARGET=/path/to/python-project
+make install TARGET=/path/to/python-project
 ```
 
 Shell 脚本需要 Bash 4+ 和 GNU `find`/`readlink`。
