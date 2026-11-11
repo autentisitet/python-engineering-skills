@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Domain Modeling"
+  short_description: "Choose Python models, typing, validation, and copy semantics"
+  default_prompt: "Use $python-domain-modeling to review these Python model, validation, interface, and copy boundaries."

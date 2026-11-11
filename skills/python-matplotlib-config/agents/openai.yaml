@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Matplotlib Configuration"
+  short_description: "Configure Matplotlib styles, CJK fonts, and Axes usage"
+  default_prompt: "Use $python-matplotlib-config to configure this project's Matplotlib style and CJK font fallback."

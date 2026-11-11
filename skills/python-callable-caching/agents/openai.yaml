@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Callable and Caching"
+  short_description: "Choose Python callables, caches, lifecycle, and cleanup"
+  default_prompt: "Use $python-callable-caching to review these Python callables, caches, lifecycle hooks, and cleanup ownership."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Binary Buffers"
+  short_description: "Design binary buffers with explicit ownership and lifetimes"
+  default_prompt: "Use $python-binary-buffers to design or review this Python binary-data path."

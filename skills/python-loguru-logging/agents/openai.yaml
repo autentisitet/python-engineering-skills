@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Loguru Logging"
+  short_description: "Configure Loguru exceptions, context, sinks, and shutdown"
+  default_prompt: "Use $python-loguru-logging to review this project's Loguru exception handling and sink lifecycle."

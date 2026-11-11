@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Media Processing"
+  short_description: "Configure media libraries, sampling, and color spaces"
+  default_prompt: "Use $python-media-processing to review this media library configuration, sampling strategy, and color-space choice."

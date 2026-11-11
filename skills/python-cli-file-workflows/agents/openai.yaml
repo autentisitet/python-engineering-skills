@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python CLI File Workflows"
+  short_description: "Build streaming Python file CLIs with clear progress and paths"
+  default_prompt: "Use $python-cli-file-workflows to review this file-processing CLI's memory, paths, progress, and arguments."

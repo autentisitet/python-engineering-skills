@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Scikit-Learn Workflow"
+  short_description: "Design leakage-safe scikit-learn evaluation workflows"
+  default_prompt: "Use $python-sklearn-workflow to review this scikit-learn split, preprocessing, search, and evaluation workflow."
