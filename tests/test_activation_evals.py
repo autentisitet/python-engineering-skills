@@ -233,5 +233,99 @@ class CodexCommandContractTests(unittest.TestCase):
             self.assertNotIn(personal_option, command)
 
 
+class RunCaseFailureTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        (self.root / "skills").mkdir()
+        self.root_patch = mock.patch.object(activation, "ROOT", self.root)
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
+        self.case = {"id": "sample-positive-01", "skill": "sample",
+                     "query": "Use the sample skill.", "should_trigger": True}
+
+    def test_nonzero_exit_reports_agent_process_failed(self) -> None:
+        completed = mock.Mock(returncode=1, stdout="", stderr="")
+        with mock.patch.object(activation.subprocess, "run", return_value=completed):
+            result = activation.run_case(self.case, timeout=30)
+        self.assertEqual(result["status"], "inconclusive")
+        self.assertTrue(result["infrastructure_failure"])
+        self.assertEqual(result["reason"], "agent_process_failed")
+        self.assertIn("duration_seconds", result)
+
+    def test_timeout_reports_timeout_reason(self) -> None:
+        with mock.patch.object(
+            activation.subprocess, "run",
+            side_effect=subprocess.TimeoutExpired("codex", 1),
+        ):
+            result = activation.run_case(self.case, timeout=1)
+        self.assertEqual(result["status"], "inconclusive")
+        self.assertTrue(result["infrastructure_failure"])
+        self.assertEqual(result["reason"], "timeout")
+
+    def test_missing_executable_reports_evaluation_unavailable(self) -> None:
+        with mock.patch.object(
+            activation.subprocess, "run", side_effect=FileNotFoundError("codex")
+        ):
+            result = activation.run_case(self.case, timeout=30)
+        self.assertEqual(result["reason"], "evaluation_unavailable")
+
+
+class PreflightTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        skill = self.root / "skills" / "sample-skill"
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            "---\nname: sample-skill\ndescription: Test preflight.\n---\n# Sample\n",
+            encoding="utf-8",
+        )
+        self.dataset = self.root / "cases.json"
+        self.dataset.write_text(json.dumps([
+            {"id": "sample-skill-positive-01", "skill": "sample-skill",
+             "query": "Use the sample skill.", "should_trigger": True},
+            {"id": "sample-skill-negative-01", "skill": "sample-skill",
+             "query": "Skip the sample skill.", "should_trigger": False},
+        ]), encoding="utf-8")
+        self.output = self.root / "result.json"
+
+    def run_main(self) -> int:
+        argv = ["run_activation_evals", str(self.dataset), "--allow-model-calls",
+                "--runs", "1", "--jobs", "1", "--timeout", "1",
+                "--output", str(self.output)]
+        with mock.patch.object(activation, "ROOT", self.root), mock.patch.object(
+            sys, "argv", argv
+        ):
+            return activation.main()
+
+    def test_hard_preflight_failure_stops_remaining_calls(self) -> None:
+        hard = {"status": "inconclusive", "infrastructure_failure": True,
+                "reason": "agent_process_failed"}
+        with mock.patch.object(activation, "run_case", return_value=hard) as run_case:
+            self.assertEqual(self.run_main(), 2)
+            self.assertEqual(run_case.call_count, 1)
+        payload = json.loads(self.output.read_text(encoding="utf-8"))
+        self.assertEqual(payload["completed_trials"], 1)
+        self.assertEqual(payload["expected_trials"], 2)
+        self.assertEqual(payload["inconclusive"], 1)
+
+    def test_soft_timeout_preflight_continues_run(self) -> None:
+        soft = {"status": "inconclusive", "infrastructure_failure": True,
+                "reason": "timeout"}
+        good = {"status": "pass", "observed_skill_read": True}
+        with mock.patch.object(
+            activation, "run_case", side_effect=[soft, good]
+        ) as run_case:
+            self.assertEqual(self.run_main(), 1)
+            self.assertEqual(run_case.call_count, 2)
+        payload = json.loads(self.output.read_text(encoding="utf-8"))
+        self.assertEqual(payload["completed_trials"], 2)
+        self.assertEqual(payload["passes"], 1)
+        self.assertEqual(payload["inconclusive"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()

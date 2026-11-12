@@ -170,7 +170,11 @@ python3 -m scripts.evals.run_activation_evals evals/train_queries.json \
 
 Any Codex login method and model/provider configuration already supported by the caller's `codex`
 installation may be used. The runner does not require a particular model, provider, profile, or
-configuration file layout.
+configuration file layout. The first trial runs as an infrastructure preflight: if the `codex`
+process cannot start or fails hard, the runner records that trial and stops before launching the
+remaining model calls. Each inconclusive trial carries a `reason` (`timeout`,
+`agent_process_failed`, `completion_event_missing`, or `evaluation_unavailable`) so transient
+timeouts are distinguishable from setup failures.
 
 For a cheaper behavior smoke test, set `--sample-per-label N` to run at most `N` positive and `N`
 negative cases per skill. Values larger than the available cases use every available case without

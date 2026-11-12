@@ -162,7 +162,10 @@ python3 -m scripts.evals.run_activation_evals evals/train_queries.json \
 ```
 
 调用者现有 `codex` 安装支持的登录方式以及 model/provider 配置都可以继续使用。评测脚本不要求
-特定模型、provider、profile 或配置文件目录结构。
+特定模型、provider、profile 或配置文件目录结构。第一条 case 会先作为基础设施预检运行：如果
+`codex` 进程无法启动或发生硬故障，runner 会记录该条后停止，不再发起后续模型调用。每条“无法判定”
+都会带一个 `reason`（`timeout`、`agent_process_failed`、`completion_event_missing` 或
+`evaluation_unavailable`），以区分临时超时与配置/环境故障。
 
 想降低行为 smoke 测试成本时，可以设置 `--sample-per-label N`，使每个 skill 最多运行 `N` 条正例和
 `N` 条负例。数值超过现有案例数时只会使用全部可用案例，不会重复；零、负数和非整数会被拒绝。

@@ -96,26 +96,36 @@ def codex_command() -> list[str]:
 
 
 def run_case(case: dict, timeout: int) -> dict:
+    started = time.monotonic()
     try:
         with tempfile.TemporaryDirectory(prefix='skill-activation-') as temp:
             workspace = Path(temp)
             link_skills(workspace, ROOT / 'skills')
-            started = time.monotonic()
             completed = subprocess.run(
                 codex_command(), input=case['query'], cwd=workspace,
                 capture_output=True, text=True, timeout=timeout, check=False,
             )
             if completed.returncode != 0:
-                return {'status': 'inconclusive', 'error': 'agent process failed; raw output omitted'}
+                return {'status': 'inconclusive', 'infrastructure_failure': True,
+                        'reason': 'agent_process_failed',
+                        'duration_seconds': round(time.monotonic() - started, 3)}
             evidence = observe(completed.stdout)
             if not evidence['turn_completed']:
-                return {'status': 'inconclusive', 'error': 'completion event unavailable'}
+                return {'status': 'inconclusive', 'infrastructure_failure': True,
+                        'reason': 'completion_event_missing',
+                        'duration_seconds': round(time.monotonic() - started, 3)}
             loaded = case['skill'] in evidence['observed_reads']
             status = 'pass' if loaded == case['should_trigger'] else ('fail' if loaded else 'inconclusive')
             return {'status': status, 'observed_skill_read': loaded, **evidence,
                     'duration_seconds': round(time.monotonic() - started, 3)}
-    except (OSError, RuntimeError, UnicodeError, ValueError, subprocess.TimeoutExpired):
-        return {'status': 'inconclusive', 'error': 'evaluation unavailable or timed out; raw output omitted'}
+    except subprocess.TimeoutExpired:
+        return {'status': 'inconclusive', 'infrastructure_failure': True,
+                'reason': 'timeout',
+                'duration_seconds': round(time.monotonic() - started, 3)}
+    except (OSError, RuntimeError, UnicodeError, ValueError):
+        return {'status': 'inconclusive', 'infrastructure_failure': True,
+                'reason': 'evaluation_unavailable',
+                'duration_seconds': round(time.monotonic() - started, 3)}
 
 
 def main():
@@ -160,8 +170,18 @@ def main():
         tmp.replace(args.output)
         return payload
     payload = save()
+    preflight = run_case(cases[0], args.timeout)
+    rows[0]['trials'].append(preflight)
+    payload = save()
+    if preflight.get('infrastructure_failure') and preflight.get('reason') in ('agent_process_failed', 'evaluation_unavailable'):
+        print(f"preflight failed: {preflight.get('reason')}; remaining model calls were not started", file=sys.stderr, flush=True)
+        return 2
+    tasks = []
+    for index, case in enumerate(cases):
+        remaining = args.runs - 1 if index == 0 else args.runs
+        tasks.extend((index, case) for _ in range(remaining))
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        pending = {pool.submit(run_case, case, args.timeout): index for index, case in enumerate(cases) for _ in range(args.runs)}
+        pending = {pool.submit(run_case, case, args.timeout): index for index, case in tasks}
         for future in concurrent.futures.as_completed(pending):
             trial = future.result()
             rows[pending[future]]['trials'].append(trial)
