@@ -170,6 +170,8 @@ python3 -m scripts.evals.run_activation_evals evals/train_queries.json \
 想降低行为 smoke 测试成本时，可以设置 `--sample-per-label N`，使每个 skill 最多运行 `N` 条正例和
 `N` 条负例。数值超过现有案例数时只会使用全部可用案例，不会重复；零、负数和非整数会被拒绝。
 
+下表记录的是单轮（`--runs 1`）结果；如需更稳定的估计，请使用 `--runs 3`。
+
 | 结果 | 状态 |
 | --- | --- |
 | Codex skill 发现 | 8/8 已发现并启用 |

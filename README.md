@@ -180,6 +180,8 @@ For a cheaper behavior smoke test, set `--sample-per-label N` to run at most `N`
 negative cases per skill. Values larger than the available cases use every available case without
 repetition; zero, negative, and non-integer values are rejected.
 
+The table below records single-run results (`--runs 1`); use `--runs 3` for a more stable estimate.
+
 | Result | Status |
 | --- | --- |
 | Codex skill discovery | 8/8 discovered and enabled |

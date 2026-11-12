@@ -2,7 +2,7 @@
   {
     "id": "python-callable-caching-positive-04",
     "skill": "python-callable-caching",
-    "query": "Use a property for a cheap derived area without claiming it reduces all instance memory.",
+    "query": "Decide whether this cheap derived value should be a property, and state who owns its invalidation and instance state, without claiming a property reduces all instance memory.",
     "should_trigger": true
   },
   {
@@ -164,7 +164,7 @@
   {
     "id": "python-callable-caching-positive-01",
     "skill": "python-callable-caching",
-    "query": "Choose instance method, classmethod, staticmethod, or module function for this behavior.",
+    "query": "Choose instance method, classmethod, staticmethod, or module function for this callable, and state how the choice affects reuse, binding, and tracebacks.",
     "should_trigger": true
   },
   {
