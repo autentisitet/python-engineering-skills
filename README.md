@@ -112,8 +112,18 @@ python3 -m venv .venv
 make validate PYTHON=.venv/bin/python
 ```
 
-`make eval` runs `validate` plus a real Codex skill-discovery check, then prints the optional
-model-backed steps; `make smoke` runs the cheap per-skill behavior smoke test.
+`make eval` runs `validate`, then a real Codex skill-discovery check, then prints the optional
+model-backed steps; `make smoke` runs a low-cost per-skill smoke test over a small sample of cases.
+Discovery needs no model or login, so it runs under an empty temporary Codex home to confirm that
+skill loading does not depend on any personal Codex settings. Model-backed activation reuses the
+caller's existing Codex configuration and login, with all evaluation behavior supplied through
+command-line options.
+
+The `make` targets and the `scripts/links/*.sh` shell scripts are POSIX-only: they require Bash 4+
+with GNU `find`/`readlink`, so run them on Linux/macOS or in WSL. Native Windows users should skip
+`make` and the `.sh` scripts — install or remove skills with the PowerShell junction scripts
+(`use-skills.ps1`/`remove-skills.ps1`) and validate with the `python -m ...` commands below. The
+Python checks themselves run on both platforms.
 
 On Windows, after installing `requirements.txt`:
 
@@ -157,6 +167,10 @@ python3 -m scripts.evals.run_activation_evals evals/train_queries.json \
   --allow-model-calls \
   --output evals/results/activation-train.json
 ```
+
+Any Codex login method and model/provider configuration already supported by the caller's `codex`
+installation may be used. The runner does not require a particular model, provider, profile, or
+configuration file layout.
 
 For a cheaper behavior smoke test, set `--sample-per-label N` to run at most `N` positive and `N`
 negative cases per skill. Values larger than the available cases use every available case without

@@ -108,8 +108,15 @@ python3 -m venv .venv
 make validate PYTHON=.venv/bin/python
 ```
 
-`make eval` 会运行 `validate` 外加一次真实的 Codex skill 发现检查，然后打印可选的模型步骤；
-`make smoke` 运行廉价的每 skill 行为 smoke 测试。
+`make eval` 会先运行 `validate`，再做一次真实的 Codex 技能发现检查，最后打印可选的需要模型的
+步骤；`make smoke` 则是每个技能只跑少量样例的低成本冒烟测试。技能发现不需要模型和登录，所以
+脚本在一个空的临时 Codex home 里运行它，用来确认「技能能否被加载」与个人配置无关；需要模型的
+激活评测则直接复用调用者本机已有的 Codex 配置和登录，所有评测行为都由命令行参数指定。
+
+`make` 目标和 `scripts/links/*.sh` 脚本仅支持 POSIX（需要 Bash 4+ 和 GNU `find`/`readlink`），
+请运行在 Linux/macOS 或 WSL 里。原生 Windows 用户不要用 `make` 和 `.sh` 脚本：安装或卸载技能改用
+PowerShell 的 junction 脚本（`use-skills.ps1`/`remove-skills.ps1`），校验则直接用下面列出的
+`python -m ...` 命令。Python 校验本身在两种平台都能运行。
 
 Windows 安装 `requirements.txt` 后运行：
 
@@ -153,6 +160,9 @@ python3 -m scripts.evals.run_activation_evals evals/train_queries.json \
   --allow-model-calls \
   --output evals/results/activation-train.json
 ```
+
+调用者现有 `codex` 安装支持的登录方式以及 model/provider 配置都可以继续使用。评测脚本不要求
+特定模型、provider、profile 或配置文件目录结构。
 
 想降低行为 smoke 测试成本时，可以设置 `--sample-per-label N`，使每个 skill 最多运行 `N` 条正例和
 `N` 条负例。数值超过现有案例数时只会使用全部可用案例，不会重复；零、负数和非整数会被拒绝。
