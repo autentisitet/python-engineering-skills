@@ -22,14 +22,13 @@ if ($TargetProject -eq $Repo) {
     throw "Choose a target Python project, not the skill source repository."
 }
 
-New-Item -ItemType Directory -Force -Path $Destination | Out-Null
-
 if ($Skills.Count -eq 0) {
     $Skills = Get-ChildItem (Join-Path $Repo "skills") -Directory |
         Sort-Object Name |
         Select-Object -ExpandProperty Name
 }
 
+# Validate the complete request before creating directories or junctions.
 foreach ($Name in $Skills) {
     if ($Name -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') {
         throw "Invalid skill name: $Name"
@@ -50,7 +49,17 @@ foreach ($Name in $Skills) {
         }
         throw "Refusing to replace existing path: $Link"
     }
+}
 
+New-Item -ItemType Directory -Force -Path $Destination | Out-Null
+
+foreach ($Name in $Skills) {
+    $SourceDirectory = Join-Path $Repo "skills\$Name"
+    $Link = Join-Path $Destination $Name
+    if (Test-Path -LiteralPath $Link) {
+        Write-Output "keep  $Name"
+        continue
+    }
     New-Item -ItemType Junction -Path $Link -Target $SourceDirectory | Out-Null
     Write-Output "link  $Name -> $Link"
 }

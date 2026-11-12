@@ -29,18 +29,22 @@ if ($Skills.Count -eq 0) {
         Select-Object -ExpandProperty Name
 }
 
+# Reject an invalid request before removing any junctions.
 foreach ($Name in $Skills) {
     if ($Name -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') {
         throw "Invalid skill name: $Name"
     }
+}
+
+foreach ($Name in $Skills) {
     $SourceDirectory = Join-Path $Repo "skills\$Name"
     $Link = Join-Path $Destination $Name
 
-    if (-not (Test-Path -LiteralPath $Link)) {
+    $Item = Get-Item -LiteralPath $Link -Force -ErrorAction SilentlyContinue
+    if (-not $Item) {
         continue
     }
 
-    $Item = Get-Item -LiteralPath $Link -Force
     if ($Item.LinkType -ne "Junction" -or $Item.Target -notcontains $SourceDirectory) {
         Write-Output "skip  $Name (not a junction managed by this repository)"
         continue

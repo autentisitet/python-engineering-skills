@@ -27,14 +27,13 @@ if [[ -L "$target_project/.agents" || -L "$dest" ]]; then
   exit 1
 fi
 
-mkdir -p "$dest"
-
 if (( $# == 0 )); then
   mapfile -t selected < <(find "$repo/skills" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
 else
   selected=("$@")
 fi
 
+# Validate the complete request before creating directories or links.
 for name in "${selected[@]}"; do
   if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
     echo "error: invalid skill name: $name" >&2
@@ -67,7 +66,17 @@ for name in "${selected[@]}"; do
     echo "error: refusing to replace existing path: $target" >&2
     exit 1
   fi
+done
 
+mkdir -p "$dest"
+
+for name in "${selected[@]}"; do
+  source_dir="$repo/skills/$name"
+  target="$dest/$name"
+  if [[ -L "$target" ]]; then
+    echo "keep  $name"
+    continue
+  fi
   ln -s "$source_dir" "$target"
   echo "link  $name -> $target"
 done

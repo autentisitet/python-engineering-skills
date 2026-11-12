@@ -37,11 +37,15 @@ else
   selected=("$@")
 fi
 
+# Reject an invalid request before removing any links.
 for name in "${selected[@]}"; do
   if [[ ! "$name" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
     echo "error: invalid skill name: $name" >&2
     exit 2
   fi
+done
+
+for name in "${selected[@]}"; do
   target="$dest/$name"
   source_dir="$repo/skills/$name"
 

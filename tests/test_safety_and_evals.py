@@ -93,6 +93,20 @@ class LinkIntegrationTests(unittest.TestCase):
         self.assertNotEqual(self.run_script('install.sh', self.target, dest.name).returncode, 0)
         self.assertTrue(dest.is_dir())
 
+    def test_install_preflights_all_names_before_mutation(self):
+        valid = 'python-domain-modeling'
+        completed = self.run_script('install.sh', self.target, valid, 'unknown-skill')
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertFalse((self.target / '.agents').exists())
+
+    def test_uninstall_preflights_all_names_before_mutation(self):
+        valid = 'python-domain-modeling'
+        self.assertEqual(self.run_script('install.sh', self.target, valid).returncode, 0)
+        link = self.target / '.agents/skills' / valid
+        completed = self.run_script('uninstall.sh', self.target, valid, '../escape')
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertTrue(link.is_symlink())
+
     def test_linked_destination_rejected_on_install_and_remove(self):
         outside = self.target / 'outside'
         outside.mkdir()
