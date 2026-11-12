@@ -177,6 +177,23 @@ class OutputPathTests(unittest.TestCase):
                 self.assertEqual(discovery.main(), 0)
             self.assertEqual(json.loads(output.read_text(encoding="utf-8")), result)
 
+    def test_discovery_uses_empty_temporary_codex_home(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            workspace = root / "workspace"
+            codex_home = root / "codex-home"
+            workspace.mkdir()
+            process = mock.Mock()
+            process.stdout = mock.Mock()
+            process.stdin = mock.Mock()
+            with mock.patch.object(discovery.subprocess, "Popen", return_value=process) as popen, mock.patch.object(
+                discovery.selectors, "DefaultSelector", side_effect=RuntimeError("stop after launch")
+            ), self.assertRaisesRegex(RuntimeError, "stop after launch"):
+                discovery.check(workspace, codex_home)
+            environment = popen.call_args.kwargs["env"]
+            self.assertEqual(environment["CODEX_HOME"], str(codex_home))
+            self.assertEqual(environment["HOME"], str(codex_home))
+
     def test_activation_creates_output_parent(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -204,6 +221,16 @@ class OutputPathTests(unittest.TestCase):
             ), mock.patch.object(sys, "argv", argv):
                 self.assertEqual(activation.main(), 0)
             self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["passes"], 1)
+
+
+class CodexCommandContractTests(unittest.TestCase):
+    def test_command_declares_required_behavior_without_personal_template(self) -> None:
+        command = activation.codex_command()
+        self.assertEqual(command[0:2], ["codex", "exec"])
+        for option in ("--ephemeral", "--json", "--skip-git-repo-check", "--sandbox", "read-only"):
+            self.assertIn(option, command)
+        for personal_option in ("--profile", "--model", "--config", "--ignore-user-config"):
+            self.assertNotIn(personal_option, command)
 
 
 if __name__ == "__main__":

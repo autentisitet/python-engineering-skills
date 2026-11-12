@@ -87,6 +87,14 @@ def sample_cases(cases: list[dict], per_label: int | None) -> list[dict]:
     return sorted(sampled, key=lambda item: (item['skill'], item['id']))
 
 
+def codex_command() -> list[str]:
+    """Return the complete portable command; user config supplies only normal Codex defaults/auth."""
+    return [
+        'codex', 'exec', '--ephemeral', '--json', '--skip-git-repo-check',
+        '--sandbox', 'read-only', '-',
+    ]
+
+
 def run_case(case: dict, timeout: int) -> dict:
     try:
         with tempfile.TemporaryDirectory(prefix='skill-activation-') as temp:
@@ -94,8 +102,8 @@ def run_case(case: dict, timeout: int) -> dict:
             link_skills(workspace, ROOT / 'skills')
             started = time.monotonic()
             completed = subprocess.run(
-                ['codex', 'exec', '--ephemeral', '--json', '--skip-git-repo-check', '--sandbox', 'read-only', '-'],
-                input=case['query'], cwd=workspace, capture_output=True, text=True, timeout=timeout, check=False,
+                codex_command(), input=case['query'], cwd=workspace,
+                capture_output=True, text=True, timeout=timeout, check=False,
             )
             if completed.returncode != 0:
                 return {'status': 'inconclusive', 'error': 'agent process failed; raw output omitted'}

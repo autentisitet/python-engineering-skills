@@ -33,10 +33,17 @@ def link_skills(workspace: Path, skills_dir: Path) -> None:
             target.symlink_to(source, target_is_directory=True)
 
 
-def check(workspace: Path, timeout: int = 30) -> dict:
+def check(workspace: Path, codex_home: Path, timeout: int = 30) -> dict:
+    codex_home.mkdir(parents=True, exist_ok=True)
+    environment = os.environ.copy()
+    environment['CODEX_HOME'] = str(codex_home)
+    environment['HOME'] = str(codex_home)
+    if os.name == 'nt':
+        environment['USERPROFILE'] = str(codex_home)
     process = subprocess.Popen(['codex', 'app-server', '--stdio'], cwd=workspace,
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                               stderr=subprocess.DEVNULL, text=True, bufsize=1)
+                               stderr=subprocess.DEVNULL, text=True, bufsize=1,
+                               env=environment)
     selector = selectors.DefaultSelector()
     selector.register(process.stdout, selectors.EVENT_READ)
     def send(value):
@@ -132,9 +139,11 @@ def main():
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix='skill-discovery-') as temp:
-        workspace = Path(temp)
+        root = Path(temp)
+        workspace = root / 'workspace'
+        workspace.mkdir()
         link_skills(workspace, ROOT / 'skills')
-        result = check(workspace)
+        result = check(workspace, root / 'codex-home')
     text = json.dumps(result, indent=2) + '\n'
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
