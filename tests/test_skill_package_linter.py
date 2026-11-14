@@ -243,5 +243,59 @@ class SkillPackageLinterTests(unittest.TestCase):
             self.assertEqual(strict.returncode, 1)
 
 
+class SkillPackageSafetyTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.skill = Path(self.temp.name) / "sample"
+        self.skill.mkdir()
+        (self.skill / "SKILL.md").write_text(
+            "---\nname: sample\ndescription: Test sample packages.\n---\n# Sample\n",
+            encoding="utf-8",
+        )
+
+    def diagnostics(self):
+        return lint_skill_packages.validate_skill_diagnostics(self.skill)
+
+    def test_traversal_link_rejected(self) -> None:
+        with (self.skill / "SKILL.md").open("a", encoding="utf-8") as output:
+            output.write("\n[Outside](../outside.md)\n")
+        self.assertIn("link.escape", {item.code for item in self.diagnostics()})
+
+    @unittest.skipIf(os.name == "nt", "POSIX symlink test")
+    def test_external_entrypoint_not_read(self) -> None:
+        entry = self.skill / "SKILL.md"
+        entry.unlink()
+        outside = Path(self.temp.name) / "outside"
+        outside.write_text("SECRET_MARKER", encoding="utf-8")
+        entry.symlink_to(outside)
+        diagnostics = self.diagnostics()
+        self.assertIn("path.external-symlink", {item.code for item in diagnostics})
+        self.assertNotIn("SECRET_MARKER", str(diagnostics))
+
+    def test_bad_utf8_diagnosed(self) -> None:
+        (self.skill / "SKILL.md").write_bytes(b"\xff")
+        self.assertIn("skill.read", {item.code for item in self.diagnostics()})
+
+    def test_unknown_standard_field_warns(self) -> None:
+        entry = self.skill / "SKILL.md"
+        entry.write_text(
+            entry.read_text(encoding="utf-8").replace(
+                "name: sample", 'name: sample\nfuture-field: "yes"'
+            ),
+            encoding="utf-8",
+        )
+        diagnostics = self.diagnostics()
+        self.assertFalse(any(item.severity == "error" for item in diagnostics))
+        self.assertIn("frontmatter.extension", {item.code for item in diagnostics})
+
+    def test_yaml_error_does_not_echo_secret(self) -> None:
+        data, diagnostics = lint_skill_packages.load_mapping(
+            "token: [SECRET_MARKER", self.skill
+        )
+        self.assertEqual(data, {})
+        self.assertNotIn("SECRET_MARKER", str(diagnostics))
+
+
 if __name__ == "__main__":
     unittest.main()

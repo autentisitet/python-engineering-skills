@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -16,97 +17,6 @@ from scripts.evals import run_activation_evals as activation
 
 
 ROOT = Path(__file__).resolve().parents[1]
-
-
-class ActivationEvidenceTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.temp = tempfile.TemporaryDirectory()
-        self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
-        self.name = "sample-skill"
-        self.path = self.root / "skills" / self.name / "SKILL.md"
-        self.path.parent.mkdir(parents=True)
-        self.entry = (
-            "---\n"
-            "name: sample-skill\n"
-            "description: Exercise activation evidence tests.\n"
-            "---\n"
-            "# Sample Skill\n\n"
-            "Follow the sample workflow.\n"
-        )
-        self.path.write_text(self.entry, encoding="utf-8")
-        self.root_patch = mock.patch.object(activation, "ROOT", self.root)
-        self.root_patch.start()
-        self.addCleanup(self.root_patch.stop)
-
-    @staticmethod
-    def event(command: str, output: str, exit_code: int = 0) -> str:
-        return json.dumps({"type": "item.completed", "item": {
-            "type": "command_execution",
-            "command": command,
-            "aggregated_output": output,
-            "exit_code": exit_code,
-        }})
-
-    def test_successful_absolute_entrypoint_read(self) -> None:
-        result = activation.observe(self.event(f"cat {self.path}", self.entry))
-        self.assertEqual(result["observed_reads"], [self.name])
-
-    def test_relative_read_and_crlf_output_are_observed(self) -> None:
-        command = f"cd .agents/skills/{self.name} && cat SKILL.md"
-        result = activation.observe(self.event(command, self.entry.replace("\n", "\r\n")))
-        self.assertEqual(result["observed_reads"], [self.name])
-
-    def test_multiple_events_ignore_noise_and_deduplicate_reads(self) -> None:
-        events = "\n".join([
-            "not json",
-            json.dumps(["not", "an", "event"]),
-            json.dumps({"type": "item.completed", "item": "not an object"}),
-            self.event("printf unrelated", "unrelated"),
-            self.event(f"cat {self.path}", self.entry),
-            self.event(f"cat {self.path}", self.entry),
-            json.dumps({"type": "turn.completed", "usage": {"input_tokens": 10}}),
-        ])
-        result = activation.observe(events)
-        self.assertEqual(result["observed_reads"], [self.name])
-        self.assertTrue(result["turn_completed"])
-
-    def test_self_report_path_mention_and_failed_command_are_not_evidence(self) -> None:
-        message = json.dumps({"type": "item.completed", "item": {
-            "type": "agent_message",
-            "text": f"I used ${self.name} and read {self.path}",
-        }})
-        path_only = self.event(f"echo {self.path}", str(self.path))
-        failed = self.event(f"cat {self.path}", self.entry, exit_code=1)
-        for output in (message, path_only, failed):
-            with self.subTest(output=output[:30]):
-                self.assertEqual(activation.observe(output)["observed_reads"], [])
-
-    def test_incomplete_entrypoint_markers_are_not_evidence(self) -> None:
-        output = "---\nname: sample-skill\n---\n"
-        result = activation.observe(self.event(f"head {self.path}", output))
-        self.assertEqual(result["observed_reads"], [])
-
-    def test_missing_completion_and_usage_filtering(self) -> None:
-        result = activation.observe(self.event(f"cat {self.path}", self.entry))
-        self.assertFalse(result["turn_completed"])
-
-        completed = json.dumps({"type": "turn.completed", "usage": {
-            "input_tokens": 10,
-            "cached_input_tokens": "4",
-            "output_tokens": True,
-            "secret": "SECRET_MARKER",
-        }})
-        result = activation.observe(completed)
-        self.assertEqual(result["usage"], {"input_tokens": 10})
-        self.assertNotIn("SECRET_MARKER", str(result))
-
-    def test_malformed_or_non_utf8_entrypoint_is_controlled(self) -> None:
-        for content in (b"# Missing frontmatter\n", b"\xff"):
-            with self.subTest(content=content):
-                self.path.write_bytes(content)
-                with self.assertRaises(RuntimeError):
-                    activation.observe(self.event(f"cat {self.path}", "output"))
 
 
 class SampleCaseSelectionTests(unittest.TestCase):
@@ -184,15 +94,16 @@ class OutputPathTests(unittest.TestCase):
             codex_home = root / "codex-home"
             workspace.mkdir()
             process = mock.Mock()
-            process.stdout = mock.Mock()
+            process.stdout = iter([])
             process.stdin = mock.Mock()
-            with mock.patch.object(discovery.subprocess, "Popen", return_value=process) as popen, mock.patch.object(
-                discovery.selectors, "DefaultSelector", side_effect=RuntimeError("stop after launch")
-            ), self.assertRaisesRegex(RuntimeError, "stop after launch"):
+            with mock.patch.dict(os.environ, {"UNRELATED_SECRET": "hidden"}), \
+                    mock.patch.object(discovery.subprocess, "Popen", return_value=process) as popen, \
+                    self.assertRaisesRegex(RuntimeError, "timed out or exited"):
                 discovery.check(workspace, codex_home)
             environment = popen.call_args.kwargs["env"]
             self.assertEqual(environment["CODEX_HOME"], str(codex_home))
             self.assertEqual(environment["HOME"], str(codex_home))
+            self.assertNotIn("UNRELATED_SECRET", environment)
 
     def test_activation_creates_output_parent(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -204,12 +115,18 @@ class OutputPathTests(unittest.TestCase):
                 encoding="utf-8",
             )
             dataset = root / "cases.json"
-            dataset.write_text(json.dumps([{
-                "id": "sample-skill-positive-01",
-                "skill": "sample-skill",
-                "query": "Use the sample skill.",
-                "should_trigger": True,
-            }]), encoding="utf-8")
+            dataset.write_text(json.dumps({
+                "version": 1,
+                "split": "train",
+                "split_seed": 20261112,
+                "queries": [{
+                    "id": "sample-skill-positive-01",
+                    "skill": "sample-skill",
+                    "category": "direct",
+                    "query": "Use the sample skill.",
+                    "should_trigger": True,
+                }],
+            }), encoding="utf-8")
             output = root / "nested" / "activation.json"
             argv = [
                 "run_activation_evals", str(dataset), "--allow-model-calls", "--runs", "1",
@@ -218,10 +135,32 @@ class OutputPathTests(unittest.TestCase):
             trial = {"status": "pass", "observed_skill_read": True}
             with mock.patch.object(activation, "ROOT", root), mock.patch.object(
                 activation, "run_case", return_value=trial
+            ), mock.patch.object(
+                activation, "detect_codex_version", return_value="codex-cli test"
             ), mock.patch.object(sys, "argv", argv):
                 self.assertEqual(activation.main(), 0)
             self.assertEqual(json.loads(output.read_text(encoding="utf-8"))["passes"], 1)
+            payload = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(payload["dataset_split"], "train")
+            self.assertEqual(payload["dataset_split_seed"], 20261112)
+            self.assertNotIn("result_format_version", payload)
+            self.assertEqual(payload["codex_version"], "codex-cli test")
+            self.assertEqual(payload["results"][0]["category"], "direct")
+            self.assertEqual(payload["skills_sha256"], activation.skills_digest(root))
 
+    def test_codex_environment_uses_existing_login_and_an_allowlist(self) -> None:
+        with mock.patch.dict(os.environ, {
+            "PATH": "/bin", "HOME": "/home/user", "CODEX_HOME": "/home/user/.codex",
+            "OPENAI_API_KEY": "model-key", "UNRELATED_SECRET": "hidden",
+            "CUSTOM_PROVIDER_TOKEN": "provider-key",
+        }, clear=True):
+            environment = activation.codex_env(("CUSTOM_PROVIDER_TOKEN",))
+        self.assertEqual(environment["PATH"], "/bin")
+        self.assertEqual(environment["HOME"], "/home/user")
+        self.assertEqual(environment["CODEX_HOME"], "/home/user/.codex")
+        self.assertEqual(environment["OPENAI_API_KEY"], "model-key")
+        self.assertEqual(environment["CUSTOM_PROVIDER_TOKEN"], "provider-key")
+        self.assertNotIn("UNRELATED_SECRET", environment)
 
 class CodexCommandContractTests(unittest.TestCase):
     def test_command_declares_required_behavior_without_personal_template(self) -> None:
@@ -229,8 +168,22 @@ class CodexCommandContractTests(unittest.TestCase):
         self.assertEqual(command[0:2], ["codex", "exec"])
         for option in ("--ephemeral", "--json", "--skip-git-repo-check", "--sandbox", "read-only"):
             self.assertIn(option, command)
-        for personal_option in ("--profile", "--model", "--config", "--ignore-user-config"):
+        self.assertNotIn("--ignore-user-config", command)
+        for personal_option in ("--profile", "--model"):
             self.assertNotIn(personal_option, command)
+
+    def test_options_set_model_and_keep_routing_isolation(self) -> None:
+        command = activation.codex_command(activation.CodexOptions(
+            model="deepseek-flash",
+            reasoning_effort="low",
+        ))
+        self.assertIn("--model", command)
+        self.assertEqual(command[command.index("--model") + 1], "deepseek-flash")
+        self.assertIn("--config", command)
+        self.assertIn("model_reasoning_effort=low", command)
+        self.assertIn("features.multi_agent=false", command)
+        self.assertIn("skills.bundled.enabled=false", command)
+        self.assertEqual(command[-3:-1], ["--config", "shell_environment_policy.inherit=none"])
 
 
 class RunCaseFailureTests(unittest.TestCase):
@@ -246,8 +199,8 @@ class RunCaseFailureTests(unittest.TestCase):
                      "query": "Use the sample skill.", "should_trigger": True}
 
     def test_nonzero_exit_reports_agent_process_failed(self) -> None:
-        completed = mock.Mock(returncode=1, stdout="", stderr="")
-        with mock.patch.object(activation.subprocess, "run", return_value=completed):
+        completed = activation.RunResult(stdout="", returncode=1, triggered=False)
+        with mock.patch.object(activation, "run_streaming", return_value=completed):
             result = activation.run_case(self.case, timeout=30)
         self.assertEqual(result["status"], "inconclusive")
         self.assertTrue(result["infrastructure_failure"])
@@ -256,7 +209,7 @@ class RunCaseFailureTests(unittest.TestCase):
 
     def test_timeout_reports_timeout_reason(self) -> None:
         with mock.patch.object(
-            activation.subprocess, "run",
+            activation, "run_streaming",
             side_effect=subprocess.TimeoutExpired("codex", 1),
         ):
             result = activation.run_case(self.case, timeout=1)
@@ -266,10 +219,161 @@ class RunCaseFailureTests(unittest.TestCase):
 
     def test_missing_executable_reports_evaluation_unavailable(self) -> None:
         with mock.patch.object(
-            activation.subprocess, "run", side_effect=FileNotFoundError("codex")
+            activation, "run_streaming", side_effect=FileNotFoundError("codex")
         ):
             result = activation.run_case(self.case, timeout=30)
         self.assertEqual(result["reason"], "evaluation_unavailable")
+
+    def test_early_tool_call_trigger_is_a_decisive_outcome(self) -> None:
+        triggered = activation.RunResult(stdout="", returncode=0, triggered=True)
+        with mock.patch.object(activation, "run_streaming", return_value=triggered):
+            positive = activation.run_case(self.case, timeout=30)
+        self.assertEqual(positive["status"], "pass")
+        self.assertTrue(positive["observed_skill_read"])
+
+        negative = dict(self.case, should_trigger=False)
+        with mock.patch.object(activation, "run_streaming", return_value=triggered):
+            result = activation.run_case(negative, timeout=30)
+        self.assertEqual(result["status"], "fail")
+
+    def test_completed_positive_miss_is_a_failure(self) -> None:
+        completed = activation.RunResult(
+            stdout=json.dumps({"type": "turn.completed", "usage": {}}) + "\n",
+            returncode=0,
+            triggered=False,
+        )
+        with mock.patch.object(activation, "run_streaming", return_value=completed):
+            result = activation.run_case(self.case, timeout=30)
+        self.assertEqual(result["status"], "fail")
+        self.assertFalse(result["observed_skill_read"])
+
+
+class RunStreamingTests(unittest.TestCase):
+    def fake_process(self, stdout_lines: list[str], poll_result: int | None = None) -> mock.Mock:
+        process = mock.Mock()
+        process.stdin = mock.Mock()
+        process.stdout = iter(stdout_lines)
+        process.returncode = None
+        process.poll.return_value = poll_result
+        process.wait.return_value = 0
+        process.terminate = mock.Mock()
+        process.kill = mock.Mock()
+        return process
+
+    def test_stop_callback_terminates_early(self) -> None:
+        event = json.dumps({"type": "item.completed", "item": {"type": "command_execution"}})
+        process = self.fake_process([event + "\n"])
+        with mock.patch.object(activation.subprocess, "Popen", return_value=process):
+            result = activation.run_streaming(
+                ["codex", "exec"], "query", Path("/tmp"),
+                {}, 30, stop=lambda e: e.get("type") == "item.completed",
+            )
+        self.assertTrue(result.triggered)
+        self.assertIn(event, result.stdout)
+        process.terminate.assert_called_once()
+
+    def test_timeout_kills_process(self) -> None:
+        process = self.fake_process([])
+        with mock.patch.object(activation.subprocess, "Popen", return_value=process):
+            with self.assertRaises(subprocess.TimeoutExpired):
+                activation.run_streaming(
+                    ["codex", "exec"], "query", Path("/tmp"), {}, 0,
+                    stop=lambda e: False,
+                )
+        process.kill.assert_called_once()
+
+    def test_streaming_captures_independent_thread_id(self) -> None:
+        events = [
+            json.dumps({"type": "thread.started", "thread_id": "thread-1"}) + "\n",
+            json.dumps({"type": "item.completed", "item": {"type": "command_execution"}}) + "\n",
+        ]
+        process = self.fake_process(events)
+        with mock.patch.object(activation.subprocess, "Popen", return_value=process):
+            result = activation.run_streaming(
+                ["codex", "exec"], "query", Path("/tmp"), {}, 30,
+                stop=lambda e: e.get("type") == "item.completed"
+                and e.get("item", {}).get("type") == "command_execution",
+            )
+        self.assertEqual(result.thread_id, "thread-1")
+
+    def test_non_object_json_does_not_discard_later_events(self) -> None:
+        events = ['[]\n', '"noise"\n', json.dumps({"type": "thread.started",
+                                                 "thread_id": "thread-2"}) + "\n",
+                  json.dumps({"type": "item.completed"}) + "\n"]
+        process = self.fake_process(events)
+        with mock.patch.object(activation.subprocess, "Popen", return_value=process):
+            result = activation.run_streaming(
+                ["codex", "exec"], "query", Path("/tmp"), {}, 30,
+                stop=lambda event: event["type"] == "item.completed",
+            )
+        self.assertTrue(result.triggered)
+        self.assertEqual(result.thread_id, "thread-2")
+
+
+class ResumeCompatibilityTests(unittest.TestCase):
+    def test_same_codex_skills_and_options_are_compatible(self) -> None:
+        options = activation.CodexOptions(model="deepseek-flash", reasoning_effort="low")
+        payload = {
+            "codex_version": "codex-cli 1.2.3",
+            "skills_sha256": "abc123",
+            "codex_options": activation.codex_options_dict(options),
+        }
+        self.assertTrue(activation.resume_is_compatible(
+            payload, "abc123", options, "codex-cli 1.2.3"
+        ))
+        self.assertIs(payload["codex_options"]["multi_agent_enabled"], False)
+
+    def test_previous_delegation_policy_cannot_be_resumed(self) -> None:
+        options = activation.CodexOptions()
+        payload = {
+            "codex_version": "codex-cli 1.2.3",
+            "skills_sha256": "abc123",
+            "codex_options": {"model": None, "profile": None,
+                              "reasoning_effort": None, "pass_env": []},
+        }
+        self.assertFalse(activation.resume_is_compatible(
+            payload, "abc123", options, "codex-cli 1.2.3"
+        ))
+
+    def test_unknown_codex_version_cannot_resume(self) -> None:
+        options = activation.CodexOptions()
+        payload = {"codex_version": None, "skills_sha256": "abc123",
+                   "codex_options": activation.codex_options_dict(options)}
+        self.assertFalse(activation.resume_is_compatible(payload, "abc123", options, None))
+
+    def test_different_model_or_skills_invalidate_resume(self) -> None:
+        options = activation.CodexOptions(model="deepseek-flash")
+        payload = {
+            "codex_version": "codex-cli 1.2.3",
+            "skills_sha256": "abc123",
+            "codex_options": activation.codex_options_dict(options),
+        }
+        self.assertFalse(activation.resume_is_compatible(
+            payload, "def456", options, "codex-cli 1.2.3"
+        ))
+        other = activation.CodexOptions(model="deepseek-v4-pro")
+        self.assertFalse(activation.resume_is_compatible(
+            payload, "abc123", other, "codex-cli 1.2.3"
+        ))
+        self.assertFalse(activation.resume_is_compatible(
+            payload, "abc123", options, "codex-cli 2.0.0"
+        ))
+
+    def test_codex_version_detection_uses_cli_output(self) -> None:
+        completed = subprocess.CompletedProcess(
+            ["codex", "--version"], 0, stdout="codex-cli 1.2.3\n", stderr=""
+        )
+        with mock.patch.object(activation.subprocess, "run", return_value=completed) as run:
+            self.assertEqual(
+                activation.detect_codex_version({"PATH": "/bin"}), "codex-cli 1.2.3"
+            )
+        self.assertEqual(run.call_args.args[0], ["codex", "--version"])
+
+    def test_case_hash_changes_with_query_text(self) -> None:
+        base = {"id": "a-positive-01", "skill": "a", "category": "direct",
+                "query": "Use a.", "should_trigger": True}
+        changed = dict(base, query="Use a differently.")
+        self.assertNotEqual(activation.case_sha256(base), activation.case_sha256(changed))
 
 
 class PreflightTests(unittest.TestCase):
@@ -284,12 +388,17 @@ class PreflightTests(unittest.TestCase):
             encoding="utf-8",
         )
         self.dataset = self.root / "cases.json"
-        self.dataset.write_text(json.dumps([
-            {"id": "sample-skill-positive-01", "skill": "sample-skill",
-             "query": "Use the sample skill.", "should_trigger": True},
-            {"id": "sample-skill-negative-01", "skill": "sample-skill",
-             "query": "Skip the sample skill.", "should_trigger": False},
-        ]), encoding="utf-8")
+        self.dataset.write_text(json.dumps({
+            "version": 1,
+            "split": "train",
+            "split_seed": 20261112,
+            "queries": [
+                {"id": "sample-skill-positive-01", "skill": "sample-skill",
+                 "category": "direct", "query": "Use the sample skill.", "should_trigger": True},
+                {"id": "sample-skill-negative-01", "skill": "sample-skill",
+                 "category": "boundary", "query": "Skip the sample skill.", "should_trigger": False},
+            ],
+        }), encoding="utf-8")
         self.output = self.root / "result.json"
 
     def run_main(self) -> int:
@@ -325,6 +434,20 @@ class PreflightTests(unittest.TestCase):
         self.assertEqual(payload["completed_trials"], 2)
         self.assertEqual(payload["passes"], 1)
         self.assertEqual(payload["inconclusive"], 1)
+
+    def test_resume_from_output_does_not_rerun_decided_trials(self) -> None:
+        good = {"status": "pass", "observed_skill_read": True}
+        with mock.patch.object(activation, "detect_codex_version", return_value="codex-cli test"), \
+                mock.patch.object(activation, "run_case", return_value=good) as run_case:
+            self.assertEqual(self.run_main(), 0)
+            self.assertEqual(run_case.call_count, 2)
+            argv = ["run_activation_evals", str(self.dataset), "--allow-model-calls",
+                    "--runs", "1", "--jobs", "1", "--output", str(self.output),
+                    "--resume", str(self.output)]
+            with mock.patch.object(activation, "ROOT", self.root), mock.patch.object(sys, "argv", argv):
+                self.assertEqual(activation.main(), 0)
+            self.assertEqual(run_case.call_count, 2)
+        self.assertEqual(json.loads(self.output.read_text(encoding="utf-8"))["completed_trials"], 2)
 
 
 if __name__ == "__main__":

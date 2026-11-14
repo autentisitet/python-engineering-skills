@@ -37,14 +37,29 @@ class Diagnostic:
     message: str
 
     def render(self) -> str:
+        """Render this diagnostic as one stable text line.
+
+        中文：把诊断对象渲染为稳定的单行文本，供 CLI 和测试使用。
+        """
         return f"{self.severity}: {self.code}: {self.path}: {self.message}"
 
 
 def issue(severity: str, code: str, path: Path, message: str) -> Diagnostic:
+    """Create a diagnostic with a normalized path string.
+
+    中文：创建包含级别、代码、路径和消息的标准诊断对象。
+    """
     return Diagnostic(severity, code, str(path), message)
 
 
 def load_mapping(text: str, path: Path) -> tuple[dict[str, Any], list[Diagnostic]]:
+    """Parse a YAML mapping without exposing malformed source content.
+
+    中文：安全解析 YAML 映射；发生错误时返回脱敏诊断而不回显原始内容。
+
+    Security / 安全：使用 ``yaml.safe_load``，并故意不把原始 YAML 异常文本写入诊断，避免 token 等
+    敏感标量被日志回显。
+    """
     try:
         value = yaml.safe_load(text)
     except yaml.YAMLError:
@@ -57,6 +72,10 @@ def load_mapping(text: str, path: Path) -> tuple[dict[str, Any], list[Diagnostic
 
 
 def parse_skill(path: Path) -> tuple[dict[str, Any], list[Diagnostic]]:
+    """Read and parse the YAML frontmatter of one SKILL.md.
+
+    中文：读取单个 ``SKILL.md`` 并解析其 YAML frontmatter。
+    """
     try:
         text = path.read_text(encoding="utf-8")
     except (OSError, UnicodeError) as error:
@@ -68,6 +87,10 @@ def parse_skill(path: Path) -> tuple[dict[str, Any], list[Diagnostic]]:
 
 
 def validate_portable_layer(skill_dir: Path) -> list[Diagnostic]:
+    """Validate portable Agent Skills frontmatter fields.
+
+    中文：校验跨客户端可移植的 Agent Skills frontmatter 字段与类型。
+    """
     path = skill_dir / "SKILL.md"
     if not path.is_file():
         return [issue("error", "skill.missing", skill_dir, "missing SKILL.md")]
@@ -129,6 +152,13 @@ def validate_portable_layer(skill_dir: Path) -> list[Diagnostic]:
 
 
 def is_contained(root: Path, candidate: Path) -> bool:
+    """Return whether a resolved candidate remains inside the package root.
+
+    中文：解析符号链接后判断候选路径是否仍位于技能包根目录内。
+
+    OS considerations / OS 考虑：通过 ``resolve`` 后的路径关系判断而非字符串前缀，兼容不同分隔符并
+    防止 ``../`` 与符号链接穿越。
+    """
     try:
         candidate.resolve(strict=False).relative_to(root.resolve(strict=True))
     except (OSError, ValueError, RuntimeError):
@@ -137,6 +167,13 @@ def is_contained(root: Path, candidate: Path) -> bool:
 
 
 def validate_package_paths(skill_dir: Path) -> list[Diagnostic]:
+    """Validate package entry count and symlink containment.
+
+    中文：检查技能包文件数量、根目录链接和逃逸符号链接。
+
+    Security / 安全：``os.walk`` 禁止跟随目录链接，并设置条目上限，避免循环链接与超大包导致无限
+    遍历或资源消耗。
+    """
     diagnostics: list[Diagnostic] = []
     if skill_dir.is_symlink():
         return [issue("error", "path.root-symlink", skill_dir, "validate the source directory, not a linked package root")]
@@ -153,6 +190,12 @@ def validate_package_paths(skill_dir: Path) -> list[Diagnostic]:
 
 
 def validate_local_links(skill_dir: Path) -> list[Diagnostic]:
+    """Validate local Markdown links in the skill entrypoint.
+
+    中文：检查技能入口中的本地 Markdown 链接是否存在且未逃逸包边界。
+
+    Security / 安全：先去除锚点再解析目标路径，并复用包边界检查，防止 Markdown 链接读取包外文件。
+    """
     path = skill_dir / "SKILL.md"
     if not path.is_file():
         return []
@@ -173,7 +216,10 @@ def validate_local_links(skill_dir: Path) -> list[Diagnostic]:
 
 
 def validate_authoring_structure(skill_dir: Path) -> list[Diagnostic]:
-    """Check cross-client authoring guidance without calling it portable validity."""
+    """Check authoring guidance separately from portable validity.
+
+    中文：检查入口长度、reference 可发现性和渐进披露结构，不混入可移植规范结论。
+    """
     entrypoint = skill_dir / "SKILL.md"
     if not entrypoint.is_file():
         return []
@@ -219,6 +265,10 @@ def validate_authoring_structure(skill_dir: Path) -> list[Diagnostic]:
 
 
 def validate_openai_yaml(skill_dir: Path) -> list[Diagnostic]:
+    """Validate optional Codex metadata in ``agents/openai.yaml``.
+
+    中文：校验可选的 Codex UI、policy、dependency 和图标元数据。
+    """
     path = skill_dir / "agents" / "openai.yaml"
     if not path.exists():
         return []
@@ -296,6 +346,10 @@ def validate_openai_yaml(skill_dir: Path) -> list[Diagnostic]:
 
 
 def validate_scripts(skill_dir: Path) -> list[Diagnostic]:
+    """Validate executable skill scripts and interpreter declarations.
+
+    中文：检查技能脚本的可执行权限和 shebang 解释器声明。
+    """
     scripts_dir = skill_dir / "scripts"
     if not scripts_dir.is_dir():
         return []
@@ -314,6 +368,13 @@ def validate_scripts(skill_dir: Path) -> list[Diagnostic]:
 
 
 def validate_skill_diagnostics(skill_dir: Path) -> list[Diagnostic]:
+    """Run all package validators for one skill directory.
+
+    中文：对单个技能目录运行路径、portable、authoring、Codex 和脚本检查。
+
+    Design / 设计：路径安全检查优先执行；发现根目录或 symlink 风险时立即返回，避免后续验证读取不可信
+    外部内容。
+    """
     diagnostics = validate_package_paths(skill_dir)
     if diagnostics:
         return diagnostics
@@ -329,6 +390,10 @@ def validate_skill_diagnostics(skill_dir: Path) -> list[Diagnostic]:
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse skill-package linter CLI arguments.
+
+    中文：解析技能目录、输出格式和严格 warning 模式参数。
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--skills-dir", type=Path, default=DEFAULT_SKILLS_DIR)
     parser.add_argument("--format", choices=("text", "json"), default="text", dest="output_format")
@@ -337,6 +402,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    """Validate all discovered skill packages and print diagnostics.
+
+    中文：发现并校验全部技能包，输出文本或 JSON 诊断并返回退出码。
+    """
     args = parse_args()
     skills_dir = args.skills_dir.resolve()
     if not skills_dir.is_dir():
