@@ -5,7 +5,7 @@ v0.2.0 and v0.3.0 sections classify uncommitted changes, not independent Git sna
 Before tagging both versions, create and verify distinct commits; two tags on a single
 combined commit would not preserve a v0.2.0 release state.
 
-## [v0.3.0] - Unreleased
+## [v0.3.0] - 2026-11-14
 
 ### Added
 
@@ -31,7 +31,7 @@ combined commit would not preserve a v0.2.0 release state.
 
 ---
 
-## [v0.2.0] - Unreleased
+## [v0.2.0] - 2026-11-14
 
 ### Added
 
@@ -75,3 +75,7 @@ combined commit would not preserve a v0.2.0 release state.
   Linux/WSL and Windows project-scoped installation scripts.
 - Initial package linting, routing evaluations, tests, GitHub Actions, security policy,
   and bilingual documentation.
+
+[v0.3.0]: https://github.com/autentisitet/python-engineering-skills/releases/tag/v0.3.0
+[v0.2.0]: https://github.com/autentisitet/python-engineering-skills/releases/tag/v0.2.0
+[v0.1.0]: https://github.com/autentisitet/python-engineering-skills/releases/tag/v0.1.0
