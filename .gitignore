@@ -8,6 +8,11 @@ desktop.ini
 .env.*
 !.env.example
 
+# Local agent and credential state
+.agents/
+.codex/
+.aws/
+
 # Python
 .venv/
 __pycache__/
@@ -21,3 +26,10 @@ build/
 dist/
 *.egg-info/
 *.log
+.tmp/
+evals/results/
+
+# Local evaluation diagnostics; publish only the skill-routing charts
+assets/evals/routing-latency.png
+assets/evals/routing-overall.png
+assets/evals/routing-trend.png

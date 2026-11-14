@@ -26,7 +26,15 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install test dependencies
-        run: python3 -m pip install -r requirements.txt
+        run: |
+          python3 -m pip install --require-hashes -r requirements.txt
+          python3 -m pip install uv==0.11.19
+      - name: Check dependency lock and export
+        run: |
+          uv lock --check
+          uv export --no-header --format requirements-txt -o requirements.generated.txt
+          tail -n +3 requirements.txt > requirements.committed.txt
+          diff -u requirements.committed.txt requirements.generated.txt
       - name: Validate skills
         run: python3 -m scripts.packages.lint_skill_packages --strict-warnings
       - name: Validate routing eval datasets
@@ -44,7 +52,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install test dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install --require-hashes -r requirements.txt
       - name: Validate skills and tests
         shell: pwsh
         run: |
