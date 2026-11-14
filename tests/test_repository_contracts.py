@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import ast
+import re
 import unittest
 from pathlib import Path
 
@@ -14,6 +16,10 @@ DOMAIN = ROOT / "skills" / "python-domain-modeling"
 
 
 def read(path: Path) -> str:
+    """Read UTF-8 repository text.
+
+    中文：读取仓库中的 UTF-8 文本文件，供内容契约测试复用。
+    """
     return path.read_text(encoding="utf-8")
 
 
@@ -174,6 +180,57 @@ class SkillRoutingTests(unittest.TestCase):
                 content = read(path)
                 with self.subTest(path=path.relative_to(ROOT)):
                     self.assertTrue(content.isascii())
+
+
+class PythonDocumentationTests(unittest.TestCase):
+    def test_production_functions_have_bilingual_docstrings(self) -> None:
+        for path in sorted((ROOT / "scripts").rglob("*.py")):
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+            functions = (
+                node for node in ast.walk(tree)
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            )
+            for function in functions:
+                with self.subTest(path=path.relative_to(ROOT), function=function.name):
+                    docstring = ast.get_docstring(function, clean=False)
+                    self.assertIsNotNone(docstring)
+                    self.assertIn("中文：", docstring)
+
+
+class MarkdownStructureTests(unittest.TestCase):
+    def test_artifact_review_template_covers_every_skill_without_claiming_results(self) -> None:
+        samples = read(ROOT / "evals" / "artifact-acceptance-samples.md")
+        template = read(ROOT / "evals" / "artifact-reviews" / "TEMPLATE.md")
+        skills = {path.name for path in (ROOT / "skills").iterdir()
+                  if (path / "SKILL.md").is_file()}
+        sample_names = re.findall(r"^Skill: `(python-[a-z0-9-]+)`\.$", samples, re.M)
+        template_names = re.findall(
+            r"^\| [^|]+ / `(python-[a-z0-9-]+)` \| not-run \| Pending \|$",
+            template, re.M,
+        )
+        self.assertEqual(set(sample_names), skills)
+        self.assertEqual(set(template_names), skills)
+        self.assertEqual(len(sample_names), len(skills))
+        self.assertEqual(len(template_names), len(skills))
+
+    def test_main_documents_separate_second_level_sections(self) -> None:
+        for relative in ("README.md", "README_zh.md", "CHANGELOG.md", "SECURITY.md",
+                         "evals/README.md", "evals/artifact-acceptance-samples.md",
+                         "evals/artifact-reviews/TEMPLATE.md"):
+            path = ROOT / relative
+            inside_fence = False
+            previous_nonblank = ""
+            headings = 0
+            for line in path.read_text(encoding="utf-8").splitlines():
+                if line.startswith("```"):
+                    inside_fence = not inside_fence
+                if not inside_fence and line.startswith("## "):
+                    if headings:
+                        with self.subTest(path=relative, heading=line):
+                            self.assertEqual(previous_nonblank, "---")
+                    headings += 1
+                if line.strip() and not inside_fence:
+                    previous_nonblank = line.strip()
 
 
 if __name__ == "__main__":

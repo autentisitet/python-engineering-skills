@@ -2,6 +2,7 @@
 
 [English](README.md) | [中文](README_zh.md)
 
+[![Version](https://img.shields.io/badge/version-v0.3.0-2563eb)](CHANGELOG.md)
 [![CI](https://github.com/autentisitet/python-engineering-skills/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/autentisitet/python-engineering-skills/actions/workflows/ci.yml)
 [![Codex Skills](https://img.shields.io/badge/Codex-Skills-000000?logo=openai&logoColor=white)](https://developers.openai.com/codex/skills/)
 [![Anthropic Agent Skills](https://img.shields.io/badge/Anthropic-Agent_Skills-D97757?logo=anthropic&logoColor=white)](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
@@ -81,6 +82,7 @@ make validate
 ```text
 python-engineering-skills/
 ├── evals/
+│   ├── README.md                # 数据集结构、category 语义与流程
 │   ├── train_queries.json
 │   ├── validation_queries.json
 │   └── results/                 # 本地生成，Git 忽略
@@ -100,25 +102,41 @@ python-engineering-skills/
 
 ## 验证
 
-使用 Python 3.10+，并在虚拟环境中安装开发依赖：
+使用 Python 3.12+：
+
+```bash
+uv sync --link-mode copy
+uv run make validate
+```
+
+`requirements.txt` 是 `uv.lock` 的带哈希导出，CI 会检查两者同步。使用 pip 时：
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install --require-hashes -r requirements.txt
 make validate PYTHON=.venv/bin/python
 ```
 
-`make eval` 会先运行 `validate`，再做一次真实的 Codex 技能发现检查，最后打印可选的需要模型的
-步骤；`make smoke` 则是每个技能只跑少量样例的低成本冒烟测试。技能发现不需要模型和登录，所以
-脚本在一个空的临时 Codex home 里运行它，用来确认「技能能否被加载」与个人配置无关；需要模型的
-激活评测则直接复用调用者本机已有的 Codex 配置和登录，所有评测行为都由命令行参数指定。
+Make 目标提供常用项目命令：
 
-`make` 目标和 `scripts/links/*.sh` 脚本仅支持 POSIX（需要 Bash 4+ 和 GNU `find`/`readlink`），
-请运行在 Linux/macOS 或 WSL 里。原生 Windows 用户不要用 `make` 和 `.sh` 脚本：安装或卸载技能改用
-PowerShell 的 junction 脚本（`use-skills.ps1`/`remove-skills.ps1`），校验则直接用下面列出的
-`python -m ...` 命令。Python 校验本身在两种平台都能运行。
+| 命令 | 用途 |
+| --- | --- |
+| `make install TARGET=/path/to/project` | 在目标项目中安装技能 |
+| `make remove TARGET=/path/to/project` | 从目标项目卸载技能 |
+| `make validate` | 离线校验技能包、数据集和测试 |
+| `make eval` | 运行校验；已安装 Codex 时再做不调用模型的 skill 发现检查 |
+| `make smoke` | 在训练集中为每个 skill 各运行一条正例和负例，调用模型 |
+| `make queries-csv` / `make queries-json` | 在 JSON 与适合 Excel 审阅的 CSV 之间转换查询集 |
+| `make queries-check` / `make queries-checksum` | 检查 JSON/CSV 一致性，或打印 SHA-256 摘要 |
+| `make retry-dataset` | 从已保存结果提取重试案例，不调用模型 |
+| `make cross-check CROSS_MODEL=<model>` | 用另一个模型重跑基线错误案例 |
 
-Windows 安装 `requirements.txt` 后运行：
+`make smoke` 和 `make cross-check` 会调用模型并消耗额度。模型评测使用调用者现有的 Codex
+配置和登录，并对传入 CLI 进程的环境变量使用白名单；不会把登录文件复制到仓库。完整参数见
+[evals/README.md](evals/README.md)。
+
+`make` 和 `.sh` 脚本需要 Bash 4+ 与 GNU `find`/`readlink`。原生 Windows 请使用 PowerShell
+安装脚本，并在安装依赖后直接运行：
 
 ```powershell
 python -m scripts.packages.lint_skill_packages --strict-warnings
@@ -126,22 +144,49 @@ python -m scripts.evals.validate_evals
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-CI 固定使用 Ubuntu 24.04 和 Windows Server 2025 runner。
+CI 同时覆盖 Ubuntu 和 Windows。
 
 ---
 
 ## 评测
 
-`evals/train_queries.json` 和 `evals/validation_queries.json` 包含 8 个 skills 的 160 条正负路由案例，
-按 60/40 固定划分：
+`evals/train_queries.json` 和 `evals/validation_queries.json` 包含 8 个 skills 的 176 条正负路由案例，
+按约 60/40 划分：
 
-- 训练集：96 条，每个 skill 6 条正例、6 条负例；
-- 验证集：64 条 held-out 案例，每个 skill 4 条正例、4 条负例。
+- 训练集：104 条，每个 skill 7 条正例、6 条负例；
+- 验证集：72 条 held-out 案例，每个 skill 5 条正例、4 条负例。
+
+每条案例都带一个 `category`（`direct`、`indirect`、`embedded` 或 `boundary`），用于记录该请求是
+直接点名技能 API、间接描述、嵌入更大任务，还是刚好落在技能边界之外。数据集结构见
+`evals/README.md`。
 
 不调用模型即可检查数据集：
 
 ```bash
 python3 -m scripts.evals.validate_evals
+```
+
+为方便在 Excel 中审查，每个 JSON 查询集都有一个同级 CSV（`evals/*_queries.csv`），列为
+`id,skill,category,query,should_trigger`，并带 UTF-8 BOM。从 JSON 重新生成 CSV，或把编辑后的
+CSV 转回 JSON：
+
+```bash
+# JSON -> CSV：转义类似公式的单元格及前导单引号，避免 Excel 执行查询文本。
+make queries-csv
+# CSV -> JSON：还原文本；先写临时文件，仅在 SHA-256 变化时替换 JSON。
+make queries-json
+# 打印 JSON/CSV 的 SHA-256 以检查漂移；不提交摘要，变更由 Git 历史追踪。
+make queries-checksum
+```
+
+底层命令是：
+
+```bash
+python3 -m scripts.evals.convert_queries to-csv \
+  evals/train_queries.json evals/train_queries.csv
+python3 -m scripts.evals.convert_queries to-json \
+  evals/train_queries.csv evals/train_queries.json \
+  --split train --split-seed 20261112
 ```
 
 不调用模型即可检查 Codex 的实际发现结果：
@@ -155,31 +200,148 @@ python3 -m scripts.evals.check_skill_discovery \
 
 ```bash
 python3 -m scripts.evals.run_activation_evals evals/train_queries.json \
-  --runs 3 \
-  --jobs 1 \
+  --reasoning-effort low \
   --allow-model-calls \
   --output evals/results/activation-train.json
 ```
 
-调用者现有 `codex` 安装支持的登录方式以及 model/provider 配置都可以继续使用。评测脚本不要求
-特定模型、provider、profile 或配置文件目录结构。第一条 case 会先作为基础设施预检运行：如果
-`codex` 进程无法启动或发生硬故障，runner 会记录该条后停止，不再发起后续模型调用。每条“无法判定”
-都会带一个 `reason`（`timeout`、`agent_process_failed`、`completion_event_missing` 或
-`evaluation_unavailable`），以区分临时超时与配置/环境故障。
+每条 trial 都会新启动一个 `codex exec` 进程，并禁用会话内的子代理。它使用现有 Codex 登录；
+认证、隔离与断点续跑的细节见 [evals/README.md](evals/README.md)。
+
+产物质量单独验收，目前没有模型实测基线：
+
+- [验收样本](evals/artifact-acceptance-samples.md)：每个 skill 的 fixture、原样 prompt 和通过/失败条件。
+- [临时工作区流程](evals/artifact-acceptance-samples.md#isolated-working-directory)：在系统临时目录复制目标 skill，
+  运行任务与检查，不链接回本仓库。
+- [结果整理与发布](evals/README.md#artifact-quality)：人工复核产物、验证输出和运行条件，
+  按[报告模板](evals/artifact-reviews/TEMPLATE.md)提交脱敏证据；原始日志不纳入 Git。
 
 想降低行为 smoke 测试成本时，可以设置 `--sample-per-label N`，使每个 skill 最多运行 `N` 条正例和
 `N` 条负例。数值超过现有案例数时只会使用全部可用案例，不会重复；零、负数和非整数会被拒绝。
 
-下表记录的是单轮（`--runs 1`）结果；如需更稳定的估计，请使用 `--runs 3`。
+### 路由指标（历史数据）
 
-| 结果 | 状态 |
+基模为 `deepseek-flash`（低推理档）；Codex CLI 为 `codex-cli 0.167.0`。使用的 query set
+包含训练集 104 条、验证集 72 条，其 SHA-256 与仓库内现有 JSON 相同，技能包摘要也匹配。
+出于 token 成本考虑，尚未在当前运行条件下对该 query set 重新执行全量评测。
+这些指标衡量 skill 是否被读取，不代表产物质量；测量方法见 [evals/README.md](evals/README.md)。
+
+本地校验状态：
+
+- `make validate`：8 个 skill 包 0 error / 0 warning，数据集校验通过，132 个测试全部通过。
+- 技能发现检查找到全部 8 个包。
+
+路由指标（保留 4 位小数）：
+
+| 指标 | 训练集 | 验证集 |
+| --- | ---: | ---: |
+| Precision | 0.9492 | 0.9268 |
+| Recall | 1.0000 | 0.9500 |
+| F1 | 0.9739 | 0.9383 |
+| Accuracy | 0.9712 | 0.9306 |
+| FPR | 0.0625 | 0.0938 |
+| FNR | 0.0000 | 0.0500 |
+| 基础设施不可判定率 | 0.0000 | 0.0000 |
+
+验证集中 2 条已完成的正例未读取目标 skill，计入 FN，而非基础设施故障。
+训练集的误触发包括 `python-binary-buffers`、`python-callable-caching`、`python-cli-file-workflows`
+各 1 条 boundary 负例。
+
+### 统计口径
+
+每条 trial 都是一次独立的 `codex exec --ephemeral` turn。正例应当读到目标 skill，负例不应当。
+
+| 单元 | 定义 |
 | --- | --- |
-| Codex skill 发现 | 8/8 已发现并启用 |
-| 训练集基线，单次运行 | 96 条中 85 条通过、6 条失败、5 条无法判定 |
-| 路由优化后的训练集，单次运行 | 96 条中 91 条通过、1 条失败、4 条无法判定 |
-| 验证集回归检查 | 64 条中 61 条通过、0 条失败、3 条无法判定；仅重试无法判定项 |
+| TP | 正例，读到目标 skill（`pass`） |
+| FN | 正例，turn 完成但没读到 skill（`fail`），或没有基础设施故障的 `inconclusive` |
+| FP | 负例，却读到了 skill（`fail`） |
+| TN | 负例，没读到 skill（`pass`） |
+| Inconclusive | 基础设施故障（`timeout`、`agent_process_failed`、`completion_event_missing`、`evaluation_unavailable`） |
 
-“无法判定”表示运行未提供预期 skill 入口已被读取的可靠证据，与已观察到的路由不匹配分开统计。
+指标统一保留 4 位小数：
+
+$$
+\begin{aligned}
+P &= \frac{TP}{TP+FP} \\
+R &= \frac{TP}{TP+FN} \\
+\mathrm{Specificity} &= \frac{TN}{TN+FP} \\
+\mathrm{FPR} &= \frac{FP}{FP+TN} \\
+\mathrm{FNR} &= \frac{FN}{FN+TP} \\
+\mathrm{Accuracy} &= \frac{TP+TN}{TP+FN+FP+TN} \\
+\mathrm{BalancedAccuracy} &= \frac{R+\mathrm{Specificity}}{2} \\
+F_1 &= \frac{2PR}{P+R} \\
+\mathrm{InconclusiveRate} &= \frac{N_{\mathrm{inconclusive}}}{N_{\mathrm{total}}} \\
+\mathrm{Coverage} &= \frac{TP+FN+FP+TN}{N_{\mathrm{total}}}
+\end{aligned}
+$$
+
+Inconclusive 不进入路由指标分母。单条 query 指标和基础设施诊断的口径见
+[evals/README.md](evals/README.md)。
+
+当前 harness 只观察“是否读取目标 skill”这一离散事件，没有连续且经过校准的路由分数。因此这些
+结果不适合计算 PR/ROC 曲线、AP 或 ROC-AUC。
+
+### 换模型交叉验证
+
+想知道基线里的失败/漏触发是不是弱模型噪声，可以用 `cross_check_evals` 用另一个模型只重跑
+基线里的错误 case（默认）或整个数据集（`--all-cases`），并报告哪些错误消失、哪些仍在、
+哪些新出现。模型通过参数传入，不写死。要在明确的运行条件下对比，先用目标模型和当前
+验证集 JSON 生成基线：
+
+```bash
+python3 -m scripts.evals.run_activation_evals evals/validation_queries.json \
+  --model deepseek-flash --reasoning-effort low --allow-model-calls \
+  --output evals/results/activation-validation-current.json
+# --model 可换成任何可用模型，也可以使用 --profile。
+# 默认只重跑基线错误 case；--all-cases 跑完整数据集，也能发现新增错误。
+# --json 以机器可读形式输出 resolved/persisted/unresolved/introduced 四类。
+python3 -m scripts.evals.cross_check_evals \
+  --baseline evals/results/activation-validation-current.json \
+  --dataset evals/validation_queries.json \
+  --model deepseek-v4-pro --reasoning-effort low \
+  --allow-model-calls \
+  --output evals/results/activation-validation-v4pro.json
+# 验证集快捷方式：make cross-check CROSS_MODEL=deepseek-v4-pro
+```
+
+### 汇总与绘图
+
+从结果文件确定性地推导路由指标：
+
+```bash
+python3 -m scripts.evals.summarize_evals evals/results/activation-train.json
+python3 -m scripts.evals.summarize_evals evals/results/activation-train.json --json
+```
+
+汇总会输出路由指标与结果 freshness；本地可用 matplotlib 生成图表：
+
+```bash
+uv run python -m scripts.evals.plot_evals \
+  evals/results/activation-train.json \
+  evals/results/activation-validation.json \
+  --output-dir evals/results
+```
+
+### 路由可视化（历史数据）
+
+以下图表与上方历史指标表使用同一份结果：
+
+<img src="assets/evals/routing-confusion.png" alt="左侧训练集、右侧验证集的路由混淆矩阵" width="900">
+
+混淆矩阵：左侧为训练集（104 条），右侧为验证集（72 条）；各面板的计数独立统计。
+
+<img src="assets/evals/routing-train-validation-per-skill.png" alt="左侧训练集、右侧验证集的逐技能 Precision、Recall 和 F1 对照" width="1000">
+
+逐技能对照图：左侧为训练集，右侧为验证集；每行对应一个 skill，格内显示指标值及其分子/分母。
+
+<img src="assets/evals/routing-per-skill.png" alt="仅训练集的逐技能 Precision、Recall 和 F1 柱状图" width="480">
+
+逐技能柱状图仅展示训练集。
+
+<img src="assets/evals/routing-radar.png" alt="训练集与验证集的逐技能精确率、召回率及 F1 雷达图对照" width="900">
+
+雷达图从上到下依次为 Precision、Recall、F1；蓝线代表训练集，橙线代表验证集。
 
 ---
 
