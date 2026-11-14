@@ -1,0 +1,73 @@
+﻿id,skill,category,query,should_trigger
+python-loguru-logging-positive-09,python-loguru-logging,direct,Use logger.complete correctly for queued messages and an async coroutine sink.,true
+python-binary-buffers-negative-09,python-binary-buffers,boundary,Calculate SHA256 of a file with an existing CLI tool.,false
+python-media-processing-negative-08,python-media-processing,boundary,Count how many files import cv2 and return the number only.,false
+python-callable-caching-negative-09,python-callable-caching,boundary,Add a property name to a JSON schema without Python descriptors.,false
+python-sklearn-workflow-negative-09,python-sklearn-workflow,boundary,Configure MLflow experiment tracking; model splitting and tuning are already fixed.,false
+python-matplotlib-config-positive-08,python-matplotlib-config,direct,Review rcParams so Chinese labels and negative signs render correctly in headless CI.,true
+python-loguru-logging-negative-08,python-loguru-logging,boundary,Explain what a logger variable usually means in Python without changing code.,false
+python-matplotlib-config-negative-07,python-matplotlib-config,boundary,Generate an illustration rather than a data chart.,false
+python-cli-file-workflows-positive-11,python-cli-file-workflows,embedded,"Stream JSONL records in batches and test memory bounds, path independence, CLI errors, and interruption.",true
+python-sklearn-workflow-positive-11,python-sklearn-workflow,direct,"Use cross_validate for multiple metrics, train scores, and fit times while preserving group splits.",true
+python-cli-file-workflows-positive-10,python-cli-file-workflows,direct,"Add argparse --version correctly and decide whether custom usage, epilog, or formatter is justified.",true
+python-matplotlib-config-negative-09,python-matplotlib-config,boundary,Fix a CSS font fallback list for a web page.,false
+python-callable-caching-negative-08,python-callable-caching,boundary,Implement a Java static method.,false
+python-binary-buffers-positive-08,python-binary-buffers,indirect,pls review endian and bounds checks in this Python binary protocol decoder.,true
+python-media-processing-negative-10,python-media-processing,boundary,Choose a CSS filter for a browser video element.,false
+python-domain-modeling-positive-10,python-domain-modeling,direct,"Review dataclasses.asdict recursion, deepcopy cost, and JSON serialization limits.",true
+python-media-processing-positive-09,python-media-processing,indirect,Sample variable-frame-rate videos at a fixed real-time FPS using timestamps rather than nominal frame indices.,true
+python-sklearn-workflow-positive-09,python-sklearn-workflow,direct,Use validation_curve to inspect whether one regularization parameter causes underfitting or overfitting.,true
+python-cli-file-workflows-positive-09,python-cli-file-workflows,direct,Use importlib.resources instead of assuming package data is next to __file__ on disk.,true
+python-domain-modeling-negative-09,python-domain-modeling,boundary,Use a plain dictionary in a tiny throwaway script.,false
+python-sklearn-workflow-negative-07,python-sklearn-workflow,boundary,"Implement PCA from scratch for a linear algebra lesson, not a sklearn workflow.",false
+python-matplotlib-config-negative-10,python-matplotlib-config,boundary,"Design a Seaborn statistical aggregation and confidence interval, not global style or fonts.",false
+python-matplotlib-config-positive-09,python-matplotlib-config,indirect,Design a scoped Matplotlib style context for a library that must not mutate global settings.,true
+python-loguru-logging-positive-10,python-loguru-logging,direct,Check whether @logger.catch is hiding exceptions from tests and supervisors.,true
+python-binary-buffers-positive-11,python-binary-buffers,indirect,Ensure a truncated Python binary payload fails before out-of-bounds parsing.,true
+python-matplotlib-config-positive-11,python-matplotlib-config,direct,Make this Matplotlib function accept an Axes and save through its owning Figure.,true
+python-media-processing-positive-08,python-media-processing,indirect,"Select uniform, segment-random, or random contiguous clip sampling for this video training task.",true
+python-binary-buffers-positive-09,python-binary-buffers,indirect,Design a Python binary buffer pipeline with bounded memory and partial reads.,true
+python-callable-caching-negative-10,python-callable-caching,boundary,Validate this API payload with Pydantic; callable and resource ownership are unchanged.,false
+python-cli-file-workflows-negative-07,python-cli-file-workflows,boundary,Count lines in a file with wc from a shell script.,false
+python-media-processing-negative-09,python-media-processing,boundary,Configure Loguru to suppress an application warning unrelated to decoder logging.,false
+python-domain-modeling-negative-08,python-domain-modeling,boundary,Explain one Enum member value without choosing a modeling approach.,false
+python-domain-modeling-positive-11,python-domain-modeling,indirect,Check whether a pickle round-trip preserves aliases and why it is not generic deepcopy.,true
+python-domain-modeling-positive-09,python-domain-modeling,indirect,Preserve two fields pointing to the same copied child when deep-copying this domain object graph.,true
+python-loguru-logging-negative-09,python-loguru-logging,boundary,Configure structlog processors; do not introduce Loguru.,false
+python-domain-modeling-negative-10,python-domain-modeling,boundary,Design TypeScript interfaces for a frontend.,false
+python-loguru-logging-negative-07,python-loguru-logging,boundary,Fix an nginx access_log rotation policy managed by logrotate.,false
+python-callable-caching-positive-11,python-callable-caching,direct,Replace __del__ resource cleanup with a context manager and idempotent close method.,true
+python-binary-buffers-negative-08,python-binary-buffers,boundary,只把日志里的 bytearray 字样替换成中文。,false
+python-binary-buffers-negative-10,python-binary-buffers,boundary,Explain the decimal value of binary 1010; no code needed.,false
+python-callable-caching-negative-07,python-callable-caching,boundary,"Choose list, deque, or generator for this iteration.",false
+python-media-processing-positive-10,python-media-processing,indirect,"Choose HSV, Lab, or YCrCb for illumination-robust color segmentation and document conversion ranges.",true
+python-cli-file-workflows-negative-09,python-cli-file-workflows,boundary,Explain argparse choices syntax without reviewing a file-processing command.,false
+python-sklearn-workflow-positive-08,python-sklearn-workflow,direct,Add learning_curve to determine whether more training data could close the train-validation gap.,true
+python-matplotlib-config-negative-08,python-matplotlib-config,boundary,Explain what plt.plot does in one sentence; do not change configuration.,false
+python-binary-buffers-negative-07,python-binary-buffers,boundary,Review a Rust borrow checker error for a byte buffer.,false
+python-loguru-logging-positive-08,python-loguru-logging,indirect,Review a multiprocessing Loguru sink so child processes do not configure the same file independently.,true
+python-media-processing-positive-11,python-media-processing,direct,Review PyAV logging and per-container RTSP options without treating both as environment variables.,true
+python-sklearn-workflow-negative-08,python-sklearn-workflow,boundary,Count sklearn imports in the repository and return the number.,false
+python-matplotlib-config-positive-10,python-matplotlib-config,indirect,Verify installed CJK fonts before selecting the Matplotlib fallback list.,true
+python-callable-caching-positive-08,python-callable-caching,direct,"Review cached_property invalidation, writable __dict__, slots compatibility, and concurrent first access.",true
+python-cli-file-workflows-negative-10,python-cli-file-workflows,boundary,Refactor a Python library function that receives open file objects and has no CLI or progress output.,false
+python-domain-modeling-positive-08,python-domain-modeling,direct,"Decide whether this nested Python object needs assignment sharing, copy.copy, or copy.deepcopy.",true
+python-loguru-logging-negative-10,python-loguru-logging,boundary,Count occurrences of logger.bind in the repository and return the number.,false
+python-callable-caching-positive-10,python-callable-caching,direct,Use __init_subclass__ for cooperative plugin registration and define duplicate/import-order behavior.,true
+python-media-processing-negative-07,python-media-processing,boundary,Fix an ffmpeg command-line invocation outside Python.,false
+python-sklearn-workflow-positive-10,python-sklearn-workflow,direct,Review permutation_importance on held-out data and account for correlated features.,true
+python-binary-buffers-positive-10,python-binary-buffers,direct,Review aliasing when mutating bytearray slices through memoryview.,true
+python-sklearn-workflow-negative-10,python-sklearn-workflow,boundary,Explain the mathematical definition of cross-validation without reviewing code or choosing a strategy.,false
+python-domain-modeling-negative-07,python-domain-modeling,boundary,Configure environment variables in a deployment manifest; no Python settings model is requested.,false
+python-callable-caching-positive-09,python-callable-caching,direct,Choose lru_cache maxsize or cache for a nearly pure function with a bounded or unbounded key space.,true
+python-cli-file-workflows-negative-08,python-cli-file-workflows,boundary,Parse one short constant JSON string already held in memory.,false
+python-cli-file-workflows-positive-08,python-cli-file-workflows,direct,"Review nested tqdm bars for files and records, including position and leave settings.",true
+python-loguru-logging-positive-11,python-loguru-logging,indirect,Design Loguru handler ownership so the sink can be removed during graceful shutdown.,true
+python-binary-buffers-positive-12,python-binary-buffers,embedded,Design a protocol server that accumulates an incomplete frame across socket reads and hands complete frames to workers without copying them; also define backpressure when a peer stops reading.,true
+python-callable-caching-positive-12,python-callable-caching,embedded,"Refactor a plugin loader so each plugin registers itself exactly once on import, duplicate imports are tolerated, and shared resources are released deterministically at shutdown.",true
+python-cli-file-workflows-positive-12,python-cli-file-workflows,indirect,"A tool must stream records through a pipeline without holding everything in memory, and its config file must resolve the same way when launched from a different working directory.",true
+python-domain-modeling-positive-12,python-domain-modeling,indirect,Two business objects need to share a child object in memory but stay independent under serialization; keep that relationship consistent across snapshots.,true
+python-loguru-logging-positive-12,python-loguru-logging,embedded,"For a worker pool that writes to one log file, make sure child processes do not each reopen the file and that the last worker to exit closes it without losing messages.",true
+python-matplotlib-config-positive-12,python-matplotlib-config,indirect,A library plots data internally but changing its defaults breaks the host application's own charts; scope the appearance changes so they do not leak outward.,true
+python-media-processing-positive-12,python-media-processing,embedded,"For an offline training pipeline, choose how to decode videos, how to sample clips for each epoch, and which color representation to feed the model.",true
+python-sklearn-workflow-positive-12,python-sklearn-workflow,indirect,Repeated rows from the same subject are spread across folds and inflate the score; restructure the evaluation so the score stays honest.,true

@@ -1,0 +1,105 @@
+﻿id,skill,category,query,should_trigger
+python-callable-caching-positive-04,python-callable-caching,direct,"Decide whether this cheap derived value should be a property, and state who owns its invalidation and instance state, without claiming a property reduces all instance memory.",true
+python-domain-modeling-positive-01,python-domain-modeling,direct,"Replace avoidable typing.Any values with concrete types, Protocol, TypedDict, or boundary validation.",true
+python-matplotlib-config-negative-05,python-matplotlib-config,boundary,Translate a README paragraph that mentions matplotlib.,false
+python-callable-caching-negative-05,python-callable-caching,boundary,Configure Redis as a distributed cache outside Python callable wrappers.,false
+python-domain-modeling-positive-05,python-domain-modeling,direct,"Configure Pydantic v2 ConfigDict, Field, field_validator, and model_validator for this API boundary.",true
+python-callable-caching-positive-05,python-callable-caching,indirect,Choose a lambda sorting key or named function based on traceback and reuse needs.,true
+python-cli-file-workflows-positive-06,python-cli-file-workflows,direct,这个 Python 文件处理脚本不能把所有结果放进 list，还要用 tqdm.write 避免弄乱进度条。,true
+python-callable-caching-positive-03,python-callable-caching,direct,This staticmethod has no class relationship. Decide whether it belongs at module scope.,true
+python-binary-buffers-negative-02,python-binary-buffers,boundary,Translate documentation containing the word memoryview.,false
+python-matplotlib-config-positive-03,python-matplotlib-config,direct,Create a reusable .mplstyle file and keep platform-specific CJK font fallback working.,true
+python-sklearn-workflow-negative-02,python-sklearn-workflow,boundary,Explain what RandomForestClassifier max_depth means in one sentence.,false
+python-domain-modeling-negative-02,python-domain-modeling,boundary,Update the Pydantic dependency pin only.,false
+python-callable-caching-negative-01,python-callable-caching,boundary,Use functools.partial in an iterator pipeline.,false
+python-domain-modeling-negative-05,python-domain-modeling,boundary,Count Any annotations and return the number only.,false
+python-media-processing-negative-05,python-media-processing,boundary,Generate a camera illustration with an image model; no Python media pipeline is involved.,false
+python-cli-file-workflows-negative-04,python-cli-file-workflows,boundary,Update tqdm and argparse mentions in the README only.,false
+python-cli-file-workflows-negative-02,python-cli-file-workflows,boundary,Explain Path(__file__).resolve().parent in one sentence.,false
+python-loguru-logging-positive-05,python-loguru-logging,direct,Decide between logger.bind and logger.contextualize for async request context.,true
+python-cli-file-workflows-positive-02,python-cli-file-workflows,indirect,Resolve a bundled default config relative to the script while keeping user input paths relative to cwd.,true
+python-media-processing-negative-01,python-media-processing,boundary,Update the opencv-python version in requirements only.,false
+python-media-processing-negative-02,python-media-processing,boundary,Apply torchvision image augmentations to tensors that are already decoded.,false
+python-loguru-logging-positive-06,python-loguru-logging,direct,检查 Loguru 的 rotation、retention、compression 配置，并避免记录敏感字段。,true
+python-loguru-logging-negative-04,python-loguru-logging,boundary,Print one debugging value to stdout in a throwaway script.,false
+python-sklearn-workflow-negative-04,python-sklearn-workflow,boundary,Call model.predict on this already fitted sklearn pipeline and save the result.,false
+python-binary-buffers-positive-06,python-binary-buffers,indirect,二进制数据头跨 chunk，Python 解析器该如何保存未完成数据？,true
+python-loguru-logging-negative-06,python-loguru-logging,boundary,Design OpenTelemetry trace sampling rather than application logs.,false
+python-matplotlib-config-negative-06,python-matplotlib-config,boundary,Update the matplotlib dependency pin only.,false
+python-callable-caching-positive-01,python-callable-caching,direct,"Choose instance method, classmethod, staticmethod, or module function for this callable, and state how the choice affects reuse, binding, and tracebacks.",true
+python-cli-file-workflows-negative-06,python-cli-file-workflows,boundary,Use Rich progress instead of tqdm in this already-designed CLI.,false
+python-domain-modeling-negative-04,python-domain-modeling,boundary,Design SQL CHECK constraints without Python models.,false
+python-matplotlib-config-positive-02,python-matplotlib-config,direct,Should this app use plt.style.use or sns.set_theme globally? Prevent one from overwriting the other.,true
+python-binary-buffers-negative-05,python-binary-buffers,boundary,Fix a CSS byte-size label in the UI.,false
+python-binary-buffers-negative-06,python-binary-buffers,boundary,Update the filename bytes-guide.md in README only.,false
+python-domain-modeling-negative-03,python-domain-modeling,boundary,Translate documentation mentioning BaseSettings.,false
+python-matplotlib-config-negative-02,python-matplotlib-config,boundary,Analyze this CSV and calculate summary statistics; do not configure plotting.,false
+python-media-processing-positive-03,python-media-processing,direct,Use Decord for fast offline training samples and choose whether the global bridge should return Torch tensors.,true
+python-binary-buffers-positive-03,python-binary-buffers,direct,Review bytearray resizing while an exported memoryview exists.,true
+python-sklearn-workflow-negative-01,python-sklearn-workflow,boundary,Update scikit-learn to the latest pinned version in requirements only.,false
+python-binary-buffers-negative-04,python-binary-buffers,boundary,Create a binary search tree algorithm over Python integers.,false
+python-media-processing-negative-06,python-media-processing,boundary,Explain what RGB stands for in one sentence without selecting a CV algorithm.,false
+python-cli-file-workflows-positive-05,python-cli-file-workflows,direct,"Design argparse options so --input-file maps to args.input_file with clear types, choices, defaults, and help.",true
+python-loguru-logging-negative-03,python-loguru-logging,boundary,Translate documentation containing the phrase logger.catch.,false
+python-callable-caching-negative-06,python-callable-caching,boundary,Count staticmethod decorators and return the number.,false
+python-callable-caching-positive-02,python-callable-caching,direct,Build a subclass-aware alternative constructor with classmethod and cls(...).,true
+python-matplotlib-config-negative-04,python-matplotlib-config,boundary,Decode OpenCV frames and convert BGR to RGB for a model.,false
+python-cli-file-workflows-positive-01,python-cli-file-workflows,direct,Rewrite this Python CLI so a 40 GB text file is processed line by line instead of read_text().,true
+python-callable-caching-negative-04,python-callable-caching,boundary,Update cached_property in documentation only.,false
+python-media-processing-positive-02,python-media-processing,direct,Decide whether Pillow should accept truncated images and whether MAX_IMAGE_PIXELS may be disabled for this trusted batch.,true
+python-cli-file-workflows-positive-04,python-cli-file-workflows,direct,This callback reports completed bytes without an iterable. Use a context-managed tqdm bar correctly.,true
+python-sklearn-workflow-positive-02,python-sklearn-workflow,indirect,Repeated measurements from each patient must not cross CV folds. Design the sklearn evaluation.,true
+python-loguru-logging-positive-04,python-loguru-logging,indirect,Our enqueue=True Loguru messages disappear at process exit. Add the correct completion path.,true
+python-cli-file-workflows-positive-03,python-cli-file-workflows,direct,"Add a tqdm file progress bar with useful desc, unit, leave behavior, and clean diagnostic messages.",true
+python-media-processing-positive-01,python-media-processing,direct,"Configure cv2.setNumThreads, optimized code, OpenCL, and RNG seed once at application startup.",true
+python-matplotlib-config-positive-04,python-matplotlib-config,direct,Refactor this plotting helper from plt.title and plt.plot to caller-owned Axes methods.,true
+python-media-processing-positive-05,python-media-processing,direct,Use PyAV to remux two streams while preserving exact time bases and selecting the output codec.,true
+python-callable-caching-negative-02,python-callable-caching,boundary,Clear a browser HTTP cache.,false
+python-domain-modeling-positive-06,python-domain-modeling,direct,比较标准 dataclass、Pydantic BaseModel、BaseSettings 和 pydantic.dataclasses.dataclass。,true
+python-binary-buffers-negative-01,python-binary-buffers,boundary,Explain UTF-8 text encoding in one paragraph.,false
+python-matplotlib-config-positive-01,python-matplotlib-config,direct,Configure Matplotlib Chinese font fallback on Fedora after applying our project style.,true
+python-sklearn-workflow-negative-06,python-sklearn-workflow,boundary,Plot a confusion matrix from already computed predictions without changing evaluation design.,false
+python-media-processing-negative-04,python-media-processing,boundary,Translate a README paragraph mentioning Decord and PyAV.,false
+python-binary-buffers-positive-01,python-binary-buffers,direct,Design a Python memoryview API with explicit ownership and release behavior.,true
+python-matplotlib-config-negative-01,python-matplotlib-config,boundary,Choose the most honest chart type for comparing these sales categories.,false
+python-domain-modeling-positive-04,python-domain-modeling,direct,Choose BaseModel for external business data versus BaseSettings for environment and dotenv configuration.,true
+python-loguru-logging-positive-03,python-loguru-logging,direct,"Configure Loguru file rotation, retention, compression, and disk-budget tests.",true
+python-sklearn-workflow-positive-04,python-sklearn-workflow,direct,Build a ColumnTransformer and Pipeline so numeric and categorical preprocessing stay inside cross-validation.,true
+python-cli-file-workflows-negative-01,python-cli-file-workflows,boundary,Read this ten-line fixture with Path.read_text and compare the exact contents.,false
+python-domain-modeling-negative-01,python-domain-modeling,boundary,Explain list[int] type syntax in one sentence.,false
+python-sklearn-workflow-negative-03,python-sklearn-workflow,boundary,Build a PyTorch DataLoader and neural-network training loop.,false
+python-domain-modeling-positive-02,python-domain-modeling,direct,Choose ABC for owned implementations or Protocol for third-party structural compatibility.,true
+python-binary-buffers-positive-02,python-binary-buffers,indirect,Parse a chunked binary packet when headers span socket reads in Python.,true
+python-sklearn-workflow-positive-05,python-sklearn-workflow,direct,"Should StandardScaler run before PCA for features measured in dollars, counts, and percentages?",true
+python-loguru-logging-negative-05,python-loguru-logging,boundary,Update the Loguru dependency version only.,false
+python-domain-modeling-negative-06,python-domain-modeling,boundary,Copy a file tree to another directory with shutil.copytree.,false
+python-sklearn-workflow-negative-05,python-sklearn-workflow,boundary,Translate documentation mentioning GridSearchCV.,false
+python-cli-file-workflows-negative-05,python-cli-file-workflows,boundary,Create a web upload endpoint for large files.,false
+python-sklearn-workflow-positive-01,python-sklearn-workflow,direct,"Choose KFold, StratifiedKFold, GroupKFold, or TimeSeriesSplit for this scikit-learn dataset.",true
+python-media-processing-negative-03,python-media-processing,boundary,Configure a Matplotlib color palette for a chart.,false
+python-loguru-logging-negative-01,python-loguru-logging,boundary,Configure Python standard-library logging with dictConfig; Loguru is not installed.,false
+python-loguru-logging-positive-02,python-loguru-logging,direct,Use logger.bind to attach job_id once instead of repeating it in every Loguru message.,true
+python-loguru-logging-negative-02,python-loguru-logging,boundary,Add a Sentry breadcrumb to this frontend application.,false
+python-binary-buffers-positive-04,python-binary-buffers,direct,Choose bytes versus bytearray for shared immutable binary messages.,true
+python-loguru-logging-positive-01,python-loguru-logging,direct,Review whether this Loguru command entrypoint should use @logger.catch with reraise=True.,true
+python-matplotlib-config-positive-06,python-matplotlib-config,embedded,批量绘图服务需要统一 Matplotlib 样式、中文字体回退，并在结束时关闭 Figure。,true
+python-domain-modeling-positive-03,python-domain-modeling,direct,Select Literal for two local options or Enum because the choices are reused and need behavior.,true
+python-media-processing-positive-04,python-media-processing,direct,Choose OpenCV for a real-time camera pipeline and define capture failure and release behavior.,true
+python-binary-buffers-negative-03,python-binary-buffers,boundary,Change an nginx proxy timeout without touching binary data.,false
+python-sklearn-workflow-positive-06,python-sklearn-workflow,indirect,这个 sklearn 项目的训练集、验证集、测试集比例是否合理，并避免调参污染最终测试集？,true
+python-cli-file-workflows-negative-03,python-cli-file-workflows,boundary,Build a Typer CLI and keep its existing progress library; do not use argparse or tqdm.,false
+python-matplotlib-config-positive-05,python-matplotlib-config,indirect,Our sns.set_theme call resets the Chinese fonts configured earlier. Fix the startup ordering.,true
+python-media-processing-positive-06,python-media-processing,direct,给图片添加中文水印并保存，比较 Pillow 字体渲染和 OpenCV 内置 putText 的边界。,true
+python-matplotlib-config-negative-03,python-matplotlib-config,boundary,Build a Plotly JavaScript dashboard with a dark theme.,false
+python-sklearn-workflow-positive-03,python-sklearn-workflow,direct,Decide whether GridSearchCV or RandomizedSearchCV fits this large hyperparameter space and compute budget.,true
+python-callable-caching-positive-06,python-callable-caching,indirect,设计一个闭包捕获配置，并检查捕获对象的生命周期是否应该改成可调用对象。,true
+python-binary-buffers-positive-05,python-binary-buffers,indirect,A zero-copy Python parser retains a huge backing buffer. Fix ownership.,true
+python-callable-caching-negative-03,python-callable-caching,boundary,Explain decorator syntax without reviewing method or cache design.,false
+python-binary-buffers-positive-07,python-binary-buffers,embedded,"Build a streaming log shipper that parses binary frames, bounds per-connection memory, and writes checkpoints; decide how partial frames and their backing buffers are owned between reads.",true
+python-callable-caching-positive-07,python-callable-caching,indirect,This helper is imported from several modules and appears in stack traces with a confusing name; reorganize it so tracebacks point at the intended place and binding stays predictable.,true
+python-cli-file-workflows-positive-07,python-cli-file-workflows,indirect,This long-running batch job reads a large dataset and prints progress while diagnostic messages keep cluttering the bar; make progress and diagnostics share the terminal cleanly.,true
+python-domain-modeling-positive-07,python-domain-modeling,embedded,"When adding this new user-account feature, decide where input validation happens, how configuration is loaded, and how domain objects are copied when passed between layers.",true
+python-loguru-logging-positive-07,python-loguru-logging,indirect,"After adding a background queue for log delivery, messages written right before the process exits sometimes never reach disk; make shutdown flush them reliably.",true
+python-matplotlib-config-positive-07,python-matplotlib-config,embedded,"A batch-reporting service renders many figures and must use one visual style, support Chinese labels on the build machine, and release each figure after saving.",true
+python-media-processing-positive-07,python-media-processing,indirect,A video dataset has files with irregular frame rates; sample frames at a fixed wall-clock interval using timestamps so training clips stay consistent.,true
+python-sklearn-workflow-positive-07,python-sklearn-workflow,embedded,"For a churn model, design the train/test split so customers from the same account never straddle sets, and tune the model without leaking the test fold.",true
