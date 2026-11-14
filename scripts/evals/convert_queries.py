@@ -155,7 +155,7 @@ def write_json(path: Path, queries: list[dict], version: int, split: str, split_
     temporary: Path | None = None
     try:
         with tempfile.NamedTemporaryFile(
-            "w", encoding="utf-8", dir=path.parent, delete=False
+            "w", encoding="utf-8", newline="", dir=path.parent, delete=False
         ) as handle:
             handle.write(text)
             temporary = Path(handle.name)
