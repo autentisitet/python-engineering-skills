@@ -210,8 +210,8 @@ python3 -m scripts.evals.run_activation_evals evals/train_queries.json \
 
 产物质量单独验收，目前没有模型实测基线：
 
-- [验收样本](evals/artifact-acceptance-samples.md)：每个 skill 的 fixture、原样 prompt 和通过/失败条件。
-- [临时工作区流程](evals/artifact-acceptance-samples.md#isolated-working-directory)：在系统临时目录复制目标 skill，
+- [验收样本](evals/artifact-samples.md)：每个 skill 的 fixture、原样 prompt 和通过/失败条件。
+- [临时工作区流程](evals/artifact-samples.md#isolated-working-directory)：在系统临时目录复制目标 skill，
   运行任务与检查，不链接回本仓库。
 - [结果整理与发布](evals/README.md#artifact-quality)：人工复核产物、验证输出和运行条件，
   按[报告模板](evals/artifact-reviews/TEMPLATE.md)提交脱敏证据；原始日志不纳入 Git。

@@ -199,7 +199,7 @@ class PythonDocumentationTests(unittest.TestCase):
 
 class MarkdownStructureTests(unittest.TestCase):
     def test_artifact_review_template_covers_every_skill_without_claiming_results(self) -> None:
-        samples = read(ROOT / "evals" / "artifact-acceptance-samples.md")
+        samples = read(ROOT / "evals" / "artifact-samples.md")
         template = read(ROOT / "evals" / "artifact-reviews" / "TEMPLATE.md")
         skills = {path.name for path in (ROOT / "skills").iterdir()
                   if (path / "SKILL.md").is_file()}
@@ -215,7 +215,7 @@ class MarkdownStructureTests(unittest.TestCase):
 
     def test_main_documents_separate_second_level_sections(self) -> None:
         for relative in ("README.md", "README_zh.md", "CHANGELOG.md", "SECURITY.md",
-                         "evals/README.md", "evals/artifact-acceptance-samples.md",
+                         "evals/README.md", "evals/artifact-samples.md",
                          "evals/artifact-reviews/TEMPLATE.md"):
             path = ROOT / relative
             inside_fence = False

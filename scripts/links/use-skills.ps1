@@ -1,3 +1,29 @@
+#Requires -Version 5.1
+
+<#
+.SYNOPSIS
+Installs selected repository skills into a native Windows project.
+
+.DESCRIPTION
+Creates project-scoped junctions under .agents\skills. The request is validated before any
+directory or junction is created, and linked destination ancestors are rejected.
+
+.PARAMETER Target
+Path to the target project. It must not be this skill repository.
+
+.PARAMETER Skills
+Optional skill names. When omitted, all repository skills are installed.
+
+.EXAMPLE
+.\scripts\links\use-skills.ps1 -Target C:\work\my-project
+
+.EXAMPLE
+.\scripts\links\use-skills.ps1 -Target C:\work\my-project -Skills python-domain-modeling
+
+.NOTES
+Use install.sh on macOS, Linux, or WSL. This script does not require elevation or modify
+persistent environment variables.
+#>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]

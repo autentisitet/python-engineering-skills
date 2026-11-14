@@ -174,8 +174,8 @@ The shortcut is
 Routing scores measure skill reads, not artifact correctness. There is no model-backed quality
 baseline yet. For each sample:
 
-1. Follow the [acceptance samples](artifact-acceptance-samples.md) and their
-   [temporary-directory workflow](artifact-acceptance-samples.md#isolated-working-directory).
+1. Follow the [acceptance samples](artifact-samples.md) and their
+   [temporary-directory workflow](artifact-samples.md#isolated-working-directory).
    Prompts explicitly invoke a skill, so they do not test automatic routing.
 2. Review the actual output and checks. A skill read alone is not a quality pass. Keep raw logs
    and working files in the temporary project or ignored `evals/results/`.

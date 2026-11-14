@@ -217,9 +217,9 @@ isolation, and resume details.
 
 Artifact quality is evaluated separately from routing; no model-backed quality baseline exists yet:
 
-- [Acceptance samples](evals/artifact-acceptance-samples.md): fixtures, verbatim prompts, and
+- [Acceptance samples](evals/artifact-samples.md): fixtures, verbatim prompts, and
   pass/fail criteria for each skill.
-- [Temporary workspace workflow](evals/artifact-acceptance-samples.md#isolated-working-directory):
+- [Temporary workspace workflow](evals/artifact-samples.md#isolated-working-directory):
   copy the target skill into a system temporary directory and run the task and checks there,
   without linking back to this repository.
 - [Review and publication](evals/README.md#artifact-quality): inspect the artifact, verification

@@ -2,7 +2,7 @@
 
 Copy this file to `evals/artifact-reviews/YYYY-MM-DD-model.md` for one evaluated snapshot. Keep
 private raw logs under `evals/results/`; only publish reviewed and scrubbed evidence. The task
-definitions are in [artifact acceptance samples](../artifact-acceptance-samples.md). This file is
+definitions are in [artifact acceptance samples](../artifact-samples.md). This file is
 a template and contains **no measured quality results**.
 
 ## Conditions
